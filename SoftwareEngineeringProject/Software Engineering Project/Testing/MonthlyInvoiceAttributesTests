@@ -1,0 +1,184 @@
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+public class MonthlyInvoiceAttributesTests {
+
+    MonthlyInvoiceAttributesTests monthlyInvoice = new MonthlyInvoiceAttributesTests();
+
+    // invoice id
+    @Test
+    public void testValidInvoiceID() {
+        assertTrue(monthlyInvoice.validateInvoiceID("500"));  // Valid invoice ID within range
+    }
+
+    @Test
+    public void testInvalidInvoiceID_TooLow() {
+        assertThrows(RuntimeException.class, () -> {
+            monthlyInvoice.validateInvoiceID("0");  // Invoice ID below valid range
+        });
+    }
+
+    @Test
+    public void testInvalidInvoiceID_TooHigh() {
+        assertThrows(RuntimeException.class, () -> {
+            monthlyInvoice.validateInvoiceID("1001");  // Invoice ID above valid range
+        });
+    }
+
+    // invoice amount
+    @Test
+    public void testValidInvoiceAmount() {
+        assertTrue(monthlyInvoice.validateInvoiceAmount(150.50));  // Valid double value
+    }
+
+    @Test
+    public void testInvalidInvoiceAmount_Negative() {
+        assertThrows(RuntimeException.class, () -> {
+            monthlyInvoice.validateInvoiceAmount(-50.75);  // Invalid: Negative amount
+        });
+    }
+
+    // customer id 
+    @Test
+    public void testValidCustomerID() {
+        assertTrue(monthlyInvoice.validateCustomerID("AE0000000000"));  // Valid Customer ID
+    }
+
+    @Test
+    public void testInvalidCustomerID_WrongFormat() {
+        assertThrows(RuntimeException.class, () -> {
+            monthlyInvoice.validateCustomerID("A123456789");  // Invalid format: missing one letter
+        });
+    }
+
+    // name customer
+    @Test
+    public void testValidName() {
+        assertTrue(monthlyInvoice.validateName("John Doe"));  // Valid customer name
+    }
+
+    @Test
+    public void testInvalidName_TooShort() {
+        assertThrows(RuntimeException.class, () -> {
+            monthlyInvoice.validateName("Jo");  // Name too short
+        });
+    }
+
+    @Test
+    public void testInvalidName_TooLong() {
+        assertThrows(RuntimeException.class, () -> {
+            monthlyInvoice.validateName("ThisNameIsWayTooLongForAValidName");  // Name too long
+        });
+    }
+
+    // postcode
+    @Test
+    public void testValidPostcode() {
+        assertTrue(monthlyInvoice.validatePostcode("N37 AO24"));  // Valid postcode
+    }
+
+    @Test
+    public void testInvalidPostcode_WrongFormat() {
+        assertThrows(RuntimeException.class, () -> {
+            monthlyInvoice.validatePostcode("AO24 N37");  // Incorrect format
+        });
+    }
+
+    // phone number 
+    @Test
+    public void testValidPhoneNumber() {
+        assertTrue(monthlyInvoice.validatePhoneNumber("+353 01 123 4567"));  // Valid phone number
+    }
+
+    @Test
+    public void testInvalidPhoneNumber_MissingCountryCode() {
+        assertThrows(RuntimeException.class, () -> {
+            monthlyInvoice.validatePhoneNumber("01 123 4567");  // Missing country code
+        });
+    }
+
+    // email
+    @Test
+    public void testValidEmail() {
+        assertTrue(monthlyInvoice.validateEmail("john.doe@example.com"));  // Valid email
+    }
+
+    @Test
+    public void testInvalidEmail_MissingAtSymbol() {
+        assertThrows(RuntimeException.class, () -> {
+            monthlyInvoice.validateEmail("john.doeexample.com");  // Missing @ symbol
+        });
+    }
+
+    @Test
+    public void testInvalidEmail_MissingDomain() {
+        assertThrows(RuntimeException.class, () -> {
+            monthlyInvoice.validateEmail("john.doe@.com");  // Missing domain part
+        });
+    }
+
+    // monthly payment status 
+    @Test
+    public void testValidMonthlyPaymentStatus() {
+        assertTrue(monthlyInvoice.validateMonthlyPaymentStatus(2));  // Valid payment delay
+    }
+
+    @Test
+    public void testInvalidMonthlyPaymentStatus_TooManyMonths() {
+        assertThrows(RuntimeException.class, () -> {
+            monthlyInvoice.validateMonthlyPaymentStatus(4);  // Payment delay > 3 months
+        });
+    }
+
+    // invoice deadline 
+    @Test
+    public void testValidInvoiceDeadline() {
+        LocalDate invoiceDate = LocalDate.now();
+        LocalDate expectedDeadline = invoiceDate.plusDays(30);
+        String formattedDeadline = expectedDeadline.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        assertTrue(monthlyInvoice.validateInvoiceDeadline(formattedDeadline));  // Valid deadline
+    }
+
+    @Test
+    public void testInvalidInvoiceDeadline_WrongFormat() {
+        assertThrows(RuntimeException.class, () -> {
+            monthlyInvoice.validateInvoiceDeadline("2024-10-31");  // Incorrect format
+        });
+    }
+
+    // extra tests 
+
+    // special characters in Customer ID
+    @Test
+    public void testInvalidCustomerID_SpecialCharacters() {
+        assertThrows(RuntimeException.class, () -> {
+            monthlyInvoice.validateCustomerID("AE!000000000");  
+        });
+    }
+
+    // invoice amount with invalid data type
+    @Test
+    public void testInvalidInvoiceAmount_NotANumber() {
+        assertThrows(RuntimeException.class, () -> {
+            monthlyInvoice.validateInvoiceAmount(Double.parseDouble("ABC"));  // Invalid input: Not a number
+        });
+    }
+
+    // phone number with extra spaces
+    @Test
+    public void testInvalidPhoneNumber_ExtraSpaces() {
+        assertThrows(RuntimeException.class, () -> {
+            monthlyInvoice.validatePhoneNumber("+353  01 123 4567");
+        });
+    }
+
+    // invalid deadline with letters in date
+    @Test
+    public void testInvalidInvoiceDeadline_ContainsLetters() {
+        assertThrows(RuntimeException.class, () -> {
+            monthlyInvoice.validateInvoiceDeadline("31/Oct/2024");  
+        });
+    }
+}

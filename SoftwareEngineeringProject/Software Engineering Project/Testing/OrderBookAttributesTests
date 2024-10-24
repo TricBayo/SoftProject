@@ -1,0 +1,137 @@
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+public class OrderBookAttributesTests {
+
+    OrderBookAttributesTests orderBook = new OrderBookAttributesTests();
+
+    // order id
+    @Test
+    public void testValidOrderId() {
+        assertTrue(orderBook.validateOrderId("500"));  // Valid Order ID within range
+    }
+
+    @Test
+    public void testInvalidOrderId_TooLow() {
+        assertThrows(RuntimeException.class, () -> {
+            orderBook.validateOrderId("0");  // ID too low
+        });
+    }
+
+    @Test
+    public void testInvalidOrderId_TooHigh() {
+        assertThrows(RuntimeException.class, () -> {
+            orderBook.validateOrderId("1001");  // ID too high
+        });
+    }
+
+    // customer name 
+    @Test
+    public void testValidCustomerName() {
+        assertTrue(orderBook.validateCustomerName("John Doe"));  // Valid customer name (matches profile)
+    }
+
+    @Test
+    public void testInvalidCustomerName_MismatchWithProfile() {
+        assertThrows(RuntimeException.class, () -> {
+            orderBook.validateCustomerName("Jane Doe");  // Name does not match profile
+        });
+    }
+
+    @Test
+    public void testInvalidCustomerName_TooShort() {
+        assertThrows(RuntimeException.class, () -> {
+            orderBook.validateCustomerName("Jo");  // Name too short
+        });
+    }
+
+    @Test
+    public void testInvalidCustomerName_TooLong() {
+        assertThrows(RuntimeException.class, () -> {
+            orderBook.validateCustomerName("ThisIsWayTooLongForAValidCustomerName");  // Name too long
+        });
+    }
+
+    // customer address
+    @Test
+    public void testValidCustomerAddress() {
+        assertTrue(orderBook.validateCustomerAddress("123 Main St, Springfield"));  // Valid address (matches profile)
+    }
+
+    @Test
+    public void testInvalidCustomerAddress_MismatchWithProfile() {
+        assertThrows(RuntimeException.class, () -> {
+            orderBook.validateCustomerAddress("456 Elm St, Springfield");  // Address does not match profile
+        });
+    }
+
+    // publication name 
+    @Test
+    public void testValidPublicationName() {
+        assertTrue(orderBook.validatePublicationName("The Daily News"));  // Valid publication name
+    }
+
+    @Test
+    public void testInvalidPublicationName_TooShort() {
+        assertThrows(RuntimeException.class, () -> {
+            orderBook.validatePublicationName("DN");  // Name too short
+        });
+    }
+
+    @Test
+    public void testInvalidPublicationName_TooLong() {
+        assertThrows(RuntimeException.class, () -> {
+            orderBook.validatePublicationName("ThisPublicationNameIsWayTooLongToBeValid");  // Name too long
+        });
+    }
+
+    // extra tests
+
+    // special characters in Customer Name
+    @Test
+    public void testInvalidCustomerName_SpecialCharacters() {
+        assertThrows(RuntimeException.class, () -> {
+            orderBook.validateCustomerName("John@Doe");  
+        });
+    }
+
+    // customer Address with special characters
+    @Test
+    public void testInvalidCustomerAddress_SpecialCharacters() {
+        assertThrows(RuntimeException.class, () -> {
+            orderBook.validateCustomerAddress("123 Main St, Springfield@");  
+        });
+    }
+
+    // publication Name with special characters
+    @Test
+    public void testInvalidPublicationName_SpecialCharacters() {
+        assertThrows(RuntimeException.class, () -> {
+            orderBook.validatePublicationName("The Daily News@");  
+        });
+    }
+
+    // empty Customer Name
+    @Test
+    public void testInvalidCustomerName_Empty() {
+        assertThrows(RuntimeException.class, () -> {
+            orderBook.validateCustomerName("");  
+        });
+    }
+
+    // empty Customer Address
+    @Test
+    public void testInvalidCustomerAddress_Empty() {
+        assertThrows(RuntimeException.class, () -> {
+            orderBook.validateCustomerAddress("");  
+        });
+    }
+
+    // empty Publication Name
+    @Test
+    public void testInvalidPublicationName_Empty() {
+        assertThrows(RuntimeException.class, () -> {
+            orderBook.validatePublicationName(""); 
+        });
+    }
+}
