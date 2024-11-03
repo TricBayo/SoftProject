@@ -23,7 +23,7 @@ public class MonthlyInvoiceCRUD {
 	}
 
 	// -------------------------------- Create --------------------------------- //
-	public boolean createMonthlyInvoice(MonthyInvoice m) {
+	public boolean createMonthlyInvoice(MonthlyInvoice m) {
 
 		boolean insertSuccessful = true;
 
@@ -71,7 +71,7 @@ public class MonthlyInvoiceCRUD {
 	}
 
 	// --------------------------- Update ------------------------ //
-	public boolean updateMonthlyInvoiceById(int id, MonthyInvoice updateM) {
+	public boolean updateMonthlyInvoiceById(int id, MonthlyInvoice updateM) {
 
 		boolean updateSuccessful = true;
 

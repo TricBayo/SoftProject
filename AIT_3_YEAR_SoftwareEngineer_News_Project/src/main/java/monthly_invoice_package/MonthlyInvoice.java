@@ -1,89 +1,90 @@
-package warning_letter_package;
+package monthly_invoice_package;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import for_all_entities_package.EntitiesExceptionHandler;
 
-public class WarningLetter {
+public class MonthlyInvoice {
 
 	private String name;
 	private String postcode;
-	private double amountInDebt;
-	private int paymentStatus;
+	private String paymentDate;
+	private double amountToPay;
 
 	// ----------------------- Constructors ------------------------ //
 
-	public WarningLetter() {
+	public MonthlyInvoice() {
 
 		// No-argument constructor
+
 	}
 
-	public WarningLetter(String name, String postcode, double amountInDebt, int paymentStatus) throws EntitiesExceptionHandler {
+	public MonthlyInvoice(String name, String postcode, String paymentDate, double amountToPay) throws EntitiesExceptionHandler {
 
 		// Validate Input
 		try {
 
 			validateName(name);
 			validatePostcode(postcode);
-			validateAmountInDebt(amountInDebt);
-			validatePaymentStatus(paymentStatus);
+			validatePaymentDate(paymentDate);
+			validateInvoiceAmount(amountToPay);
 
 		} catch (EntitiesExceptionHandler e) {
-			throw e;
 
+			throw e;
 		}
 
 		this.name = name;
 		this.postcode = postcode;
-		this.amountInDebt = amountInDebt;
-		this.paymentStatus = paymentStatus;
+		this.paymentDate = paymentDate;
+		this.amountToPay = amountToPay;
 	}
 
 	// ----------------------- Getter and Setters ------------------------ //
 
 	public String getName() {
-		return name;
 
+		return name;
 	}
 
 	public void setName(String name) throws EntitiesExceptionHandler {
+
 		validateName(name);
 		this.name = name;
-
 	}
 
 	public String getPostcode() {
-		return postcode;
 
+		return postcode;
 	}
 
 	public void setPostcode(String postcode) throws EntitiesExceptionHandler {
+
 		validatePostcode(postcode);
 		this.postcode = postcode;
-
 	}
 
-	public double getAmountInDebt() {
-		return amountInDebt;
+	public String getPaymentDate() {
 
+		return paymentDate;
 	}
 
-	public void setAmountInDebt(double amountInDebt) throws EntitiesExceptionHandler {
-		validateAmountInDebt(amountInDebt);
-		this.amountInDebt = amountInDebt;
+	public void setPaymentDate(String paymentDate) throws EntitiesExceptionHandler {
 
+		validatePaymentDate(paymentDate);
+		this.paymentDate = paymentDate;
 	}
 
-	public int getPaymentStatus() {
-		return paymentStatus;
+	public double getAmountToPay() {
 
+		return amountToPay;
 	}
 
-	public void setPaymentStatus(int paymentStatus) throws EntitiesExceptionHandler {
-		validatePaymentStatus(paymentStatus);
-		this.paymentStatus = paymentStatus;
+	public void setAmountToPay(double amountToPay) throws EntitiesExceptionHandler {
 
+		validateInvoiceAmount(amountToPay);
+		this.amountToPay = amountToPay;
 	}
 
 	// ----------------- Attributes Validating Methods ----------------- //
@@ -131,37 +132,42 @@ public class WarningLetter {
 		return result;
 	}
 
-	public boolean validateAmountInDebt(double amountInDebt) throws EntitiesExceptionHandler {
+	public boolean validatePaymentDate(String paymentDate) throws EntitiesExceptionHandler {
 
 		boolean result = false;
 
-		if (amountInDebt < 0) {
-			throw new EntitiesExceptionHandler("Amount in debt must be a non-negative value");
+		// Regex to validate payment date in format YYYY-MM-DD
+		String dateRegex = "^\\d{4}-\\d{2}-\\d{2}$";
+		Pattern pattern = Pattern.compile(dateRegex);
+		Matcher matcher = pattern.matcher(paymentDate);
+
+		if (paymentDate == null || paymentDate.isBlank()) {
+			throw new EntitiesExceptionHandler("Payment Date NOT specified");
+
+		} else if (!matcher.matches()) {
+			throw new EntitiesExceptionHandler("Payment Date format NOT valid. Expected format: YYYY-MM-DD");
 
 		} else {
 			result = true;
 
 		}
+
 		return result;
+
 	}
 
-	public boolean validatePaymentStatus(int paymentStatus) throws EntitiesExceptionHandler {
+	public boolean validateInvoiceAmount(double amountToPay) throws EntitiesExceptionHandler {
 
-		boolean result = true;
+		boolean result = false;
 
-		if (paymentStatus < 0) {
-			result = false;
-			throw new EntitiesExceptionHandler("Payment Status must be a non-negative integer");
+		if (amountToPay < 0) {
+			throw new EntitiesExceptionHandler("Amount to Pay must be a non-negative value");
 
-		} else if (paymentStatus < 3) {
-			System.out.println("Less than three months in debt: " + paymentStatus);
-
-		} else if (paymentStatus >= 3) {
-			System.out.println("More than or Equal three months in debt: " + paymentStatus);
-			System.out.println("Warning Letter Issued to Customer.");
+		} else {
+			result = true;
 
 		}
-		return result;
 
+		return result;
 	}
 }

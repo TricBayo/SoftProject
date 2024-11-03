@@ -13,7 +13,11 @@ public class CustomerProfile {
 	private String email;
 	private int paymentStatus;
 
-	// ----------------------- Constructor ------------------------ //
+	// ----------------------- Constructors ------------------------ //
+
+	public CustomerProfile() {
+		// No-argument constructor
+	}
 
 	public CustomerProfile(String name, String postcode, String phoneNumber, String email, int paymentStatus) throws EntitiesExceptionHandler {
 
@@ -42,75 +46,108 @@ public class CustomerProfile {
 	// ----------------------- Getter and Setters ------------------------ //
 
 	String getName() {
+
 		return this.name;
 	}
 
-	void setName(String name) {
+	void setName(String name) throws EntitiesExceptionHandler {
+
+		validateName(name);
 		this.name = name;
 	}
 
 	String getPostcode() {
+
 		return this.postcode;
 	}
 
-	void setPostcode(String postcode) {
+	void setPostcode(String postcode) throws EntitiesExceptionHandler {
+
+		validatePostcode(postcode);
 		this.postcode = postcode;
 	}
 
 	String getPhoneNumber() {
-		return this.phoneNumber;
 
+		return this.phoneNumber;
 	}
 
-	void setPhoneNumber(String phoneNumber) {
+	void setPhoneNumber(String phoneNumber) throws EntitiesExceptionHandler {
+
+		validatePhoneNumber(phoneNumber);
 		this.phoneNumber = phoneNumber;
 	}
 
 	public String getEmail() {
+
 		return this.email;
 	}
 
-	public void setEmail(String email) {
+	public void setEmail(String email) throws EntitiesExceptionHandler {
+
+		validateEmail(email);
 		this.email = email;
 	}
 
 	public int getPaymentStatus() {
+
 		return this.paymentStatus;
 	}
 
-	public void setPaymentStatus(int paymentStatus) {
+	public void setPaymentStatus(int paymentStatus) throws EntitiesExceptionHandler {
+
+		validatePaymentStatus(paymentStatus);
 		this.paymentStatus = paymentStatus;
 	}
 
-	// ----------------- Parameters Validating Method ----------------- //
+	// ----------------- Attributes Validating Method ----------------- //
 
-	public static void validateName(String name) throws EntitiesExceptionHandler {
+	public boolean validateName(String name) throws EntitiesExceptionHandler {
 
-		if (name.isBlank() || name.isEmpty())
+		boolean result = false;
+
+		if (name == null || name.isBlank()) {
 			throw new EntitiesExceptionHandler("Customer Name NOT specified");
 
-		else if (name.length() < 2)
+		} else if (name.length() < 2) {
 			throw new EntitiesExceptionHandler("Customer Name does not meet minimum length requirements");
 
-		else if (name.length() > 50)
-			throw new EntitiesExceptionHandler("Customer Name does not exceeds maximum length requirements");
+		} else if (name.length() > 50) {
+			throw new EntitiesExceptionHandler("Customer Name exceeds maximum length requirements");
 
+		} else {
+			result = true;
+		}
+
+		return result;
 	}
 
-	public static void validatePostcode(String postcode) throws EntitiesExceptionHandler {
+	public boolean validatePostcode(String postCode) throws EntitiesExceptionHandler {
 
-		if (postcode.isBlank() || postcode.isEmpty())
-			throw new EntitiesExceptionHandler("Customer Address NOT specified");
+		boolean result = false;
 
-		else if (postcode.length() < 5)
-			throw new EntitiesExceptionHandler("Customer Address does not meet minimum length requirements");
+		// Regex for the format: one letter, two digits, two letters, two digits
+		String postCodeRegex = "^[A-Z]{1}\\d{2}[A-Z]{2}\\d{2}$";
+		Pattern pattern = Pattern.compile(postCodeRegex);
+		Matcher matcher = pattern.matcher(postCode);
 
-		else if (postcode.length() > 60)
-			throw new EntitiesExceptionHandler("Customer Address does not exceeds maximum length requirements");
+		if (postCode == null || postCode.isBlank()) {
+			throw new EntitiesExceptionHandler("Postcode NOT specified");
 
+		} else if (!matcher.matches()) {
+			throw new EntitiesExceptionHandler("Postcode format NOT valid. Expected format: A11XX22");
+
+		} else {
+			result = true;
+
+		}
+
+		return result;
 	}
 
-	public static void validatePhoneNumber(String phoneNumber) throws EntitiesExceptionHandler {
+	public boolean validatePhoneNumber(String phoneNumber) throws EntitiesExceptionHandler {
+
+		boolean result = false;
 
 		if (phoneNumber.isBlank() || phoneNumber.isEmpty())
 			throw new EntitiesExceptionHandler("Customer PhoneNumber NOT specified");
@@ -120,47 +157,61 @@ public class CustomerProfile {
 
 		else if (phoneNumber.length() > 15)
 			throw new EntitiesExceptionHandler("Customer PhoneNumber does not exceeds maximum length requirements");
-
-	}
-
-	public static void validateEmail(String email) throws EntitiesExceptionHandler {
-
-		if (email.isBlank() || email.isEmpty())
-
-			throw new EntitiesExceptionHandler("Customer Email NOT specified");
-
 		else {
 
-			// Regex to validate general email format
-			String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
-
-			// Compile Regex pattern
-			Pattern pattern = Pattern.compile(emailRegex);
-			Matcher matcher = pattern.matcher(email);
-
-			// Check if the email matches the format
-			if (!matcher.matches()) {
-
-				throw new EntitiesExceptionHandler("Customer Email format NOT valid");
-
-			}
-
+			result = true;
 		}
+
+		return result;
 
 	}
 
-	public static void validatePaymentStatus(int paymentStatus) throws EntitiesExceptionHandler {
+	public boolean validateEmail(String email) throws EntitiesExceptionHandler {
+
+		boolean result = false;
+
+		// Regex to validate general email format
+		String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+		Pattern pattern = Pattern.compile(emailRegex);
+		Matcher matcher = pattern.matcher(email);
+
+		if (email.isBlank() || email.isEmpty()) {
+
+			throw new EntitiesExceptionHandler("Customer Email NOT specified");
+		}
+		// Check if the email matches the format
+		else if (!matcher.matches()) {
+			throw new EntitiesExceptionHandler("Customer Email format NOT valid");
+
+		} else {
+
+			result = true;
+		}
+
+		return result;
+
+	}
+
+	public boolean validatePaymentStatus(int paymentStatus) throws EntitiesExceptionHandler {
+
+		boolean result = false;
 
 		String paymentStatusString = String.valueOf(paymentStatus);
 
 		if (paymentStatusString.isBlank() || paymentStatusString.isEmpty())
-
 			throw new EntitiesExceptionHandler("Customer Payment Status NOT specified");
 
 		else if (paymentStatus < 0)
-
 			throw new EntitiesExceptionHandler("Customer Payment Status does not meet minimum length requirements");
 
-	}
+		else if (paymentStatus > 3)
+			throw new EntitiesExceptionHandler("Customer Payment Status indicates debt over three months");
 
+		else {
+			result = true;
+		}
+
+		return result;
+
+	}
 }
