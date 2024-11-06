@@ -1,5 +1,8 @@
 package monthly_invoice_package;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,7 +13,7 @@ public class MonthlyInvoice {
 	private String name;
 	private String postcode;
 	private String paymentDate;
-	private double amountToPay;
+	private String amountToPay;
 
 	// ----------------------- Constructors ------------------------ //
 
@@ -20,7 +23,7 @@ public class MonthlyInvoice {
 
 	}
 
-	public MonthlyInvoice(String name, String postcode, String paymentDate, double amountToPay) throws EntitiesExceptionHandler {
+	public MonthlyInvoice(String name, String postcode, String paymentDate, String amountToPay) throws EntitiesExceptionHandler {
 
 		// Validate Input
 		try {
@@ -76,12 +79,12 @@ public class MonthlyInvoice {
 		this.paymentDate = paymentDate;
 	}
 
-	public double getAmountToPay() {
+	public String getAmountToPay() {
 
 		return amountToPay;
 	}
 
-	public void setAmountToPay(double amountToPay) throws EntitiesExceptionHandler {
+	public void setAmountToPay(String amountToPay) throws EntitiesExceptionHandler {
 
 		validateInvoiceAmount(amountToPay);
 		this.amountToPay = amountToPay;
@@ -102,6 +105,9 @@ public class MonthlyInvoice {
 		} else if (name.length() > 50) {
 			throw new EntitiesExceptionHandler("Customer Name exceeds maximum length requirements");
 
+		} else if (!name.matches("[a-zA-Z ]+")) { // Only allows letters and spaces
+			throw new EntitiesExceptionHandler("Customer Name contains invalid characters");
+
 		} else {
 			result = true;
 		}
@@ -121,53 +127,72 @@ public class MonthlyInvoice {
 		if (postCode == null || postCode.isBlank()) {
 			throw new EntitiesExceptionHandler("Postcode NOT specified");
 
+		} else if (postCode.contains(" ")) {
+			throw new EntitiesExceptionHandler("Postcode must not contain spaces");
+
 		} else if (!matcher.matches()) {
 			throw new EntitiesExceptionHandler("Postcode format NOT valid. Expected format: A11XX22");
 
 		} else {
 			result = true;
-
 		}
 
 		return result;
 	}
 
-	public boolean validatePaymentDate(String paymentDate) throws EntitiesExceptionHandler {
-
-		boolean result = false;
-
-		// Regex to validate payment date in format YYYY-MM-DD
-		String dateRegex = "^\\d{4}-\\d{2}-\\d{2}$";
+	public boolean validatePaymentDate(String date) throws EntitiesExceptionHandler {
+		// Regex to validate date format as DD/MM/YYYY
+		String dateRegex = "^\\d{2}/\\d{2}/\\d{4}$";
 		Pattern pattern = Pattern.compile(dateRegex);
-		Matcher matcher = pattern.matcher(paymentDate);
+		Matcher matcher = pattern.matcher(date);
 
-		if (paymentDate == null || paymentDate.isBlank()) {
-			throw new EntitiesExceptionHandler("Payment Date NOT specified");
+		if (date == null || date.isBlank()) {
+			throw new EntitiesExceptionHandler("Report Date NOT specified");
 
 		} else if (!matcher.matches()) {
-			throw new EntitiesExceptionHandler("Payment Date format NOT valid. Expected format: YYYY-MM-DD");
+			throw new EntitiesExceptionHandler("Report Date format NOT valid. Expected format: DD/MM/YY");
+		}
 
-		} else {
-			result = true;
+		// Further validate logical correctness of the date
+		try {
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+			LocalDate.parse(date, formatter); // This will throw an exception if the date is invalid
+
+		} catch (DateTimeParseException e) {
+
+			throw new EntitiesExceptionHandler("Report Date is not a valid date.");
+		}
+
+		return true; // Return true if the date is valid
+	}
+
+	public boolean validateInvoiceAmount(String amountToPay) throws EntitiesExceptionHandler {
+
+		boolean result = false;
+		double amount;
+
+		try {
+
+			amount = Double.parseDouble(amountToPay);
+
+		} catch (NumberFormatException e) {
+
+			throw new EntitiesExceptionHandler("Amount to Pay must be a valid number");
 
 		}
 
-		return result;
+		if (amount < 0) {
 
-	}
-
-	public boolean validateInvoiceAmount(double amountToPay) throws EntitiesExceptionHandler {
-
-		boolean result = false;
-
-		if (amountToPay < 0) {
 			throw new EntitiesExceptionHandler("Amount to Pay must be a non-negative value");
 
 		} else {
+
 			result = true;
 
 		}
 
 		return result;
 	}
+
 }

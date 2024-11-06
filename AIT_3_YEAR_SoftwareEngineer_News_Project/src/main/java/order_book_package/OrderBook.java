@@ -88,6 +88,9 @@ public class OrderBook {
 		} else if (name.length() > 50) {
 			throw new EntitiesExceptionHandler("Customer Name exceeds maximum length requirements");
 
+		} else if (!name.matches("[a-zA-Z ]+")) { // Only allows letters and spaces
+			throw new EntitiesExceptionHandler("Customer Name contains invalid characters");
+
 		} else {
 			result = true;
 		}
@@ -107,18 +110,20 @@ public class OrderBook {
 		if (postCode == null || postCode.isBlank()) {
 			throw new EntitiesExceptionHandler("Postcode NOT specified");
 
+		} else if (postCode.contains(" ")) {
+			throw new EntitiesExceptionHandler("Postcode must not contain spaces");
+
 		} else if (!matcher.matches()) {
 			throw new EntitiesExceptionHandler("Postcode format NOT valid. Expected format: A11XX22");
 
 		} else {
 			result = true;
-
 		}
 
 		return result;
 	}
 
-	public boolean validatePublicationName(String publicationName) throws EntitiesExceptionHandler {
+	public boolean validatePublicationName(String name) throws EntitiesExceptionHandler {
 
 		boolean result = false;
 
@@ -131,9 +136,11 @@ public class OrderBook {
 		} else if (name.length() > 50) {
 			throw new EntitiesExceptionHandler("Publication Name exceeds maximum length requirements");
 
+		} else if (!name.matches("[a-zA-Z ]+")) { // Only allows letters and spaces
+			throw new EntitiesExceptionHandler("Publication Name contains invalid characters");
+
 		} else {
 			result = true;
-
 		}
 
 		return result;

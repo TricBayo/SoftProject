@@ -94,12 +94,14 @@ public class DeliveryArea {
 		if (postCode == null || postCode.isBlank()) {
 			throw new EntitiesExceptionHandler("Postcode NOT specified");
 
+		} else if (postCode.contains(" ")) {
+			throw new EntitiesExceptionHandler("Postcode must not contain spaces");
+
 		} else if (!matcher.matches()) {
 			throw new EntitiesExceptionHandler("Postcode format NOT valid. Expected format: A11XX22");
 
 		} else {
 			result = true;
-
 		}
 
 		return result;

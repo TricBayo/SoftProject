@@ -14,26 +14,33 @@ public class DeliveryAreaAttributesTests {
 	// area postcode tests
 	@Test
 	public void testValidPostcode() throws EntitiesExceptionHandler {
-		assertTrue(deliveryArea.validatePostcode("N37 AO24")); // Valid postcode
+		assertTrue(deliveryArea.validatePostcode("N37AO24")); // Valid postcode
+	}
+
+	@Test
+	public void testInvalidPostcode_WithSpace() {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			deliveryArea.validatePostcode("N37 A02"); // Incorrect length
+		});
 	}
 
 	@Test
 	public void testInvalidPostcode_TooShort() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			deliveryArea.validatePostcode("N37 A02"); // Incorrect length
 		});
 	}
 
 	@Test
 	public void testInvalidPostcode_WrongFormat() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			deliveryArea.validatePostcode("37N AO24"); // Incorrect format
 		});
 	}
 
 	@Test
 	public void testInvalidPostcode_SpecialCharacters() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			deliveryArea.validatePostcode("N37@AO24"); // Special characters in postcode
 		});
 	}
@@ -46,14 +53,14 @@ public class DeliveryAreaAttributesTests {
 
 	@Test
 	public void testInvalidAreaName_TooLong() {
-		assertThrows(RuntimeException.class, () -> {
-			deliveryArea.validateAreaName("ThisAreaNameIsWayTooLongToBeValidForOurApplication"); // More than 50 chars
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			deliveryArea.validateAreaName("ThisAreaNameIsWayTooLongToBeValidForOurApplicationApplication"); // More than 50 chars
 		});
 	}
 
 	@Test
 	public void testInvalidAreaName_Empty() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			deliveryArea.validateAreaName(""); // Empty area name
 		});
 	}

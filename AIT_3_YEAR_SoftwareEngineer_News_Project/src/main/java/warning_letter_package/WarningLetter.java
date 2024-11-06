@@ -101,6 +101,9 @@ public class WarningLetter {
 		} else if (name.length() > 50) {
 			throw new EntitiesExceptionHandler("Customer Name exceeds maximum length requirements");
 
+		} else if (!name.matches("[a-zA-Z ]+")) { // Only allows letters and spaces
+			throw new EntitiesExceptionHandler("Customer Name contains invalid characters");
+
 		} else {
 			result = true;
 		}
@@ -120,12 +123,14 @@ public class WarningLetter {
 		if (postCode == null || postCode.isBlank()) {
 			throw new EntitiesExceptionHandler("Postcode NOT specified");
 
+		} else if (postCode.contains(" ")) {
+			throw new EntitiesExceptionHandler("Postcode must not contain spaces");
+
 		} else if (!matcher.matches()) {
 			throw new EntitiesExceptionHandler("Postcode format NOT valid. Expected format: A11XX22");
 
 		} else {
 			result = true;
-
 		}
 
 		return result;

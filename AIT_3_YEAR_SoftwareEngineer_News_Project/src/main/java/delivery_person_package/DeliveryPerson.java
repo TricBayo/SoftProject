@@ -115,9 +115,11 @@ public class DeliveryPerson {
 		} else if (name.length() > 50) {
 			throw new EntitiesExceptionHandler("Delivery Person Name exceeds maximum length requirements");
 
+		} else if (!name.matches("[a-zA-Z ]+")) { // Only allows letters and spaces
+			throw new EntitiesExceptionHandler("Delivery Person Name contains invalid characters");
+
 		} else {
 			result = true;
-
 		}
 
 		return result;
@@ -150,21 +152,26 @@ public class DeliveryPerson {
 	public boolean validateAreaId(String areaId) throws EntitiesExceptionHandler {
 
 		boolean result = false;
-		int areaIdNumber = Integer.parseInt(areaId);
 
-		// Check if the OptionalInt has a value
+		// Check if the areaId is null or blank before parsing
 		if (areaId == null || areaId.isBlank()) {
 			throw new EntitiesExceptionHandler("Area Id Number NOT specified");
+		}
 
-		} else if (areaIdNumber <= 0) {
+		int areaIdNumber;
+		try {
+			areaIdNumber = Integer.parseInt(areaId);
+		} catch (NumberFormatException e) {
+			throw new EntitiesExceptionHandler("Area Id must be a valid number");
+		}
+
+		// Additional checks for areaIdNumber
+		if (areaIdNumber <= 0) {
 			throw new EntitiesExceptionHandler("Area Id must be greater than zero");
-
 		} else if (areaIdNumber > 24) {
-			throw new EntitiesExceptionHandler("Area Id must be less than 2");
-
+			throw new EntitiesExceptionHandler("Area Id must be less than or equal to 24");
 		} else {
 			result = true;
-
 		}
 
 		return result;
@@ -182,12 +189,14 @@ public class DeliveryPerson {
 		if (postCode == null || postCode.isBlank()) {
 			throw new EntitiesExceptionHandler("Postcode NOT specified");
 
+		} else if (postCode.contains(" ")) {
+			throw new EntitiesExceptionHandler("Postcode must not contain spaces");
+
 		} else if (!matcher.matches()) {
 			throw new EntitiesExceptionHandler("Postcode format NOT valid. Expected format: A11XX22");
 
 		} else {
 			result = true;
-
 		}
 
 		return result;
@@ -197,8 +206,9 @@ public class DeliveryPerson {
 
 		boolean result = false;
 
-		// Regex to ensure password contains at least one number or special character
-		String passwordRegex = "^(?=.*[0-9!@#$%^&*]).{8,15}$";
+		// Regex to ensure password contains at least one letter and one number or
+		// special character
+		String passwordRegex = "^(?=.*[A-Za-z])(?=.*[0-9!@#$%^&*]).{8,15}$";
 		Pattern pattern = Pattern.compile(passwordRegex);
 		Matcher matcher = pattern.matcher(password);
 
@@ -209,13 +219,13 @@ public class DeliveryPerson {
 			throw new EntitiesExceptionHandler("Password must be between 8 and 15 characters");
 
 		} else if (!matcher.matches()) {
-			throw new EntitiesExceptionHandler("Password must contain at least one number or special character");
+			throw new EntitiesExceptionHandler("Password must contain at least one letter and one number or special character");
 
 		} else {
 			result = true;
-
 		}
 
 		return result;
 	}
+
 }

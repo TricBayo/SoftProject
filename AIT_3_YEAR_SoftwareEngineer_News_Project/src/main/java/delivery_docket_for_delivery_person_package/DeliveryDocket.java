@@ -1,5 +1,8 @@
 package delivery_docket_for_delivery_person_package;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -104,69 +107,77 @@ public class DeliveryDocket {
 
 	// ----------------- Attributes Validating Method ----------------- //
 
-	public boolean validateCustomerName(String customerName) throws EntitiesExceptionHandler {
+	public boolean validateCustomerName(String name) throws EntitiesExceptionHandler {
 
 		boolean result = false;
 
-		if (customerName == null || customerName.isBlank()) {
+		if (name == null || name.isBlank()) {
 			throw new EntitiesExceptionHandler("Customer Name NOT specified");
 
-		} else if (customerName.length() < 2) {
+		} else if (name.length() < 2) {
 			throw new EntitiesExceptionHandler("Customer Name does not meet minimum length requirements");
 
-		} else if (customerName.length() > 50) {
+		} else if (name.length() > 50) {
 			throw new EntitiesExceptionHandler("Customer Name exceeds maximum length requirements");
 
+		} else if (!name.matches("[a-zA-Z ]+")) { // Only allows letters and spaces
+			throw new EntitiesExceptionHandler("Customer Name contains invalid characters");
+
 		} else {
 			result = true;
-
 		}
 
 		return result;
 	}
 
-	public boolean validateDeliveryPersonName(String deliveryPersonName) throws EntitiesExceptionHandler {
+	public boolean validateDeliveryPersonName(String name) throws EntitiesExceptionHandler {
 
 		boolean result = false;
 
-		if (deliveryPersonName == null || deliveryPersonName.isBlank()) {
-			throw new EntitiesExceptionHandler("Delivery Person Name NOT specified");
+		if (name == null || name.isBlank()) {
+			throw new EntitiesExceptionHandler("Customer Name NOT specified");
 
-		} else if (deliveryPersonName.length() < 2) {
-			throw new EntitiesExceptionHandler("Delivery Person Name does not meet minimum length requirements");
+		} else if (name.length() < 2) {
+			throw new EntitiesExceptionHandler("Customer Name does not meet minimum length requirements");
 
-		} else if (deliveryPersonName.length() > 50) {
-			throw new EntitiesExceptionHandler("Delivery Person Name exceeds maximum length requirements");
+		} else if (name.length() > 50) {
+			throw new EntitiesExceptionHandler("Customer Name exceeds maximum length requirements");
+
+		} else if (!name.matches("[a-zA-Z ]+")) { // Only allows letters and spaces
+			throw new EntitiesExceptionHandler("Customer Name contains invalid characters");
 
 		} else {
 			result = true;
-
 		}
 
 		return result;
 	}
 
-	public boolean deliveryDocketDate(String deliveryDate) throws EntitiesExceptionHandler {
-
-		boolean result = false;
-
-		// Regex to validate date format as YYYY-MM-DD
-		String dateRegex = "^\\d{4}-\\d{2}-\\d{2}$";
+	public boolean deliveryDocketDate(String date) throws EntitiesExceptionHandler {
+		// Regex to validate date format as DD/MM/YYYY
+		String dateRegex = "^\\d{2}/\\d{2}/\\d{4}$";
 		Pattern pattern = Pattern.compile(dateRegex);
-		Matcher matcher = pattern.matcher(orderDate);
+		Matcher matcher = pattern.matcher(date);
 
-		if (deliveryDate == null || deliveryDate.isBlank()) {
-			throw new EntitiesExceptionHandler("Order Date NOT specified");
+		if (date == null || date.isBlank()) {
+			throw new EntitiesExceptionHandler("Delivery Docket Date NOT specified");
 
 		} else if (!matcher.matches()) {
-			throw new EntitiesExceptionHandler("Order Date format NOT valid. Expected format: YYYY-MM-DD");
-
-		} else {
-			result = true;
-
+			throw new EntitiesExceptionHandler("Delivery Docket  Date format NOT valid. Expected format: DD/MM/YY");
 		}
 
-		return result;
+		// Further validate logical correctness of the date
+		try {
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+			LocalDate.parse(date, formatter); // This will throw an exception if the date is invalid
+
+		} catch (DateTimeParseException e) {
+
+			throw new EntitiesExceptionHandler("Delivery Docket Date is not a valid date.");
+		}
+
+		return true; // Return true if the date is valid
 	}
 
 	public boolean validatePostcode(String postCode) throws EntitiesExceptionHandler {
@@ -181,12 +192,14 @@ public class DeliveryDocket {
 		if (postCode == null || postCode.isBlank()) {
 			throw new EntitiesExceptionHandler("Postcode NOT specified");
 
+		} else if (postCode.contains(" ")) {
+			throw new EntitiesExceptionHandler("Postcode must not contain spaces");
+
 		} else if (!matcher.matches()) {
 			throw new EntitiesExceptionHandler("Postcode format NOT valid. Expected format: A11XX22");
 
 		} else {
 			result = true;
-
 		}
 
 		return result;
