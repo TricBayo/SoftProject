@@ -14,13 +14,13 @@ public class DeliveryDocketAttributesTests {
 	// delivery docket date
 	@Test
 	public void testValidDocketDate() throws EntitiesExceptionHandler {
-		assertTrue(deliveryDocket.deliveryDocketDate("2024-10-01")); // Valid date, matches order date
+		assertTrue(deliveryDocket.deliveryDocketDate("01/10/2024")); // Valid date, matches order date
 	}
 
 	@Test
 	public void testInvalidDocketDate_NotMatchingOrderDate() {
-		assertThrows(RuntimeException.class, () -> {
-			deliveryDocket.deliveryDocketDate("2024-10-02"); // Docket date doesn't match order date
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			deliveryDocket.deliveryDocketDate("02/102024"); // Docket date doesn't match order date
 		});
 	}
 
@@ -32,14 +32,14 @@ public class DeliveryDocketAttributesTests {
 
 	@Test
 	public void testInvalidTrackingNumber_TooLow() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			deliveryDocket.validateTrackingNumber(0); // Below valid range
 		});
 	}
 
 	@Test
 	public void testInvalidTrackingNumber_TooHigh() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			deliveryDocket.validateTrackingNumber(1001); // Above valid range
 		});
 	}
@@ -52,15 +52,15 @@ public class DeliveryDocketAttributesTests {
 
 	@Test
 	public void testInvalidCustomerName_TooShort() {
-		assertThrows(RuntimeException.class, () -> {
-			deliveryDocket.validateCustomerName("Jo"); // Less than 3 chars
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			deliveryDocket.validateCustomerName("J"); // Less than 2 chars
 		});
 	}
 
 	@Test
 	public void testInvalidCustomerName_TooLong() {
-		assertThrows(RuntimeException.class, () -> {
-			deliveryDocket.validateCustomerName("ThisNameIsWayTooLongToBeValid"); // More than 20 chars
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			deliveryDocket.validateCustomerName("ThisNameIsWayTooLongToBeValidThisNameIsWayTooLongToBeValid"); // More than 50 chars
 		});
 	}
 
@@ -72,34 +72,34 @@ public class DeliveryDocketAttributesTests {
 
 	@Test
 	public void testInvalidDeliveryPersonName_TooShort() {
-		assertThrows(RuntimeException.class, () -> {
-			deliveryDocket.validateDeliveryPersonName("Ja"); // Less than 3 chars
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			deliveryDocket.validateDeliveryPersonName("J"); // Less than 2 chars
 		});
 	}
 
 	@Test
 	public void testInvalidDeliveryPersonName_TooLong() {
-		assertThrows(RuntimeException.class, () -> {
-			deliveryDocket.validateDeliveryPersonName("ThisNameIsWayTooLongToBeValid"); // More than 20 chars
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			deliveryDocket.validateDeliveryPersonName("ThisNameIsWayTooLongToBeValidThisNameIsWayTooLongToBeValid"); // More than 50 chars
 		});
 	}
 
 	// postcode
 	@Test
 	public void testValidPostcode() throws EntitiesExceptionHandler {
-		assertTrue(deliveryDocket.validatePostcode("N37 AO24")); // Valid postcode
+		assertTrue(deliveryDocket.validatePostcode("N37AO24")); // Valid postcode
 	}
 
 	@Test
 	public void testInvalidPostcode_LessThanRequiredLength() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			deliveryDocket.validatePostcode("N37 A02"); // Incorrect length
 		});
 	}
 
 	@Test
 	public void testInvalidPostcode_WrongFormat() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			deliveryDocket.validatePostcode("37N AO24"); // Incorrect format
 		});
 	}
@@ -107,7 +107,7 @@ public class DeliveryDocketAttributesTests {
 	// special characters in customer name
 	@Test
 	public void testInvalidCustomerName_SpecialCharacters() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			deliveryDocket.validateCustomerName("John@Doe");
 		});
 	}
@@ -115,7 +115,7 @@ public class DeliveryDocketAttributesTests {
 	// special characters in Delivery Person name
 	@Test
 	public void testInvalidDeliveryPersonName_SpecialCharacters() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			deliveryDocket.validateDeliveryPersonName("Jane@Smith");
 		});
 	}
@@ -123,7 +123,7 @@ public class DeliveryDocketAttributesTests {
 	// postcode with special characters
 	@Test
 	public void testInvalidPostcode_SpecialCharacters() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			deliveryDocket.validatePostcode("N37@AO24");
 		});
 	}

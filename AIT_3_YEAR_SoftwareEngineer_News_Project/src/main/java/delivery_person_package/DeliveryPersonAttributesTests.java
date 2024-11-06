@@ -19,34 +19,34 @@ public class DeliveryPersonAttributesTests {
 
 	@Test
 	public void testInvalidName_TooShort() {
-		assertThrows(RuntimeException.class, () -> {
-			deliveryPerson.validateName("Jo"); // Less than 3 chars
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			deliveryPerson.validateName("J"); // Less than 2 chars
 		});
 	}
 
 	@Test
 	public void testInvalidName_TooLong() {
-		assertThrows(RuntimeException.class, () -> {
-			deliveryPerson.validateName("ThisNameIsWayTooLongToBeValid"); // More than 20 chars
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			deliveryPerson.validateName("ThisNameIsWayTooLongToBeValidThisNameIsWayTooLongToBeValid"); // More than 50 chars
 		});
 	}
 
 	// postcode
 	@Test
 	public void testValidPostcode() throws EntitiesExceptionHandler {
-		assertTrue(deliveryPerson.validatePostcode("N37 AO24")); // Valid postcode
+		assertTrue(deliveryPerson.validatePostcode("N37AO24")); // Valid postcode
 	}
 
 	@Test
 	public void testInvalidPostcode_TooShort() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			deliveryPerson.validatePostcode("N37 A02"); // Incorrect length
 		});
 	}
 
 	@Test
 	public void testInvalidPostcode_WrongFormat() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			deliveryPerson.validatePostcode("37N AO24"); // Incorrect format
 		});
 	}
@@ -59,14 +59,14 @@ public class DeliveryPersonAttributesTests {
 
 	@Test
 	public void testInvalidPhoneNumber_NoCountryCode() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			deliveryPerson.validatePhoneNumber("01 123 4567"); // Missing country code
 		});
 	}
 
 	@Test
 	public void testInvalidPhoneNumber_WrongFormat() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			deliveryPerson.validatePhoneNumber("+353011234567"); // Incorrect format
 		});
 	}
@@ -78,27 +78,29 @@ public class DeliveryPersonAttributesTests {
 	}
 
 	@Test
-	public void testInvalidAreaIdEmpty() throws EntitiesExceptionHandler {
-		assertTrue(deliveryPerson.validateAreaId("")); // Area Id is Empty
+	public void testInvalidAreaIdEmpty() {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			deliveryPerson.validateAreaId(""); // Area Id is Empty
+		});
 	}
 
 	@Test
 	public void testInvalidAreaIdZero() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			deliveryPerson.validateAreaId("0"); // Area Id is zero
 		});
 	}
 
 	@Test
 	public void testInvalidAreaIdLessThanZero() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			deliveryPerson.validateAreaId("-1"); // Area Id less than zero
 		});
 	}
 
 	@Test
 	public void testInvalidAreaIdGreaterThan24() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			deliveryPerson.validateAreaId("25"); // Area Id greater than 24
 		});
 	}
@@ -111,21 +113,21 @@ public class DeliveryPersonAttributesTests {
 
 	@Test
 	public void testInvalidPassword_TooShort() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			deliveryPerson.validatePassword("Pass1!"); // Less than 8 characters
 		});
 	}
 
 	@Test
 	public void testInvalidPassword_TooLong() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			deliveryPerson.validatePassword("ThisIsAVeryLongPassword123!"); // More than 15 characters
 		});
 	}
 
 	@Test
 	public void testInvalidPassword_NoNumberOrSpecialChar() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			deliveryPerson.validatePassword("Password"); // Missing number or special character
 		});
 	}
@@ -133,7 +135,7 @@ public class DeliveryPersonAttributesTests {
 	// name containing numbers
 	@Test
 	public void testInvalidName_ContainsNumbers() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			deliveryPerson.validateName("John123");
 		});
 	}
@@ -141,7 +143,7 @@ public class DeliveryPersonAttributesTests {
 	// postcode with special characters
 	@Test
 	public void testInvalidPostcode_SpecialCharacters() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			deliveryPerson.validatePostcode("N37@AO24");
 		});
 	}
@@ -149,7 +151,7 @@ public class DeliveryPersonAttributesTests {
 	// phone number with extra spaces
 	@Test
 	public void testInvalidPhoneNumber_ExtraSpaces() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			deliveryPerson.validatePhoneNumber("+353  01 123 4567");
 		});
 	}
@@ -157,7 +159,7 @@ public class DeliveryPersonAttributesTests {
 	// password with only special characters
 	@Test
 	public void testInvalidPassword_OnlySpecialChars() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			deliveryPerson.validatePassword("!!!!!!!!");
 		});
 	}

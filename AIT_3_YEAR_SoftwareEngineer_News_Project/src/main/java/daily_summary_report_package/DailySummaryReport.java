@@ -1,5 +1,8 @@
 package daily_summary_report_package;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -61,22 +64,30 @@ public class DailySummaryReport {
 	// ----------------- Attributes Validating Method ----------------- //
 
 	public boolean validateDate(String date) throws EntitiesExceptionHandler {
-
-		boolean result = false;
-
-		// Regex to validate date format as YYYY-MM-DD
-		String dateRegex = "^\\d{4}-\\d{2}-\\d{2}$";
+		// Regex to validate date format as DD/MM/YYYY
+		String dateRegex = "^\\d{2}/\\d{2}/\\d{4}$";
 		Pattern pattern = Pattern.compile(dateRegex);
 		Matcher matcher = pattern.matcher(date);
 
-		if (date.isBlank() || date.isEmpty()) {
+		if (date == null || date.isBlank()) {
 			throw new EntitiesExceptionHandler("Report Date NOT specified");
 
 		} else if (!matcher.matches()) {
-			throw new EntitiesExceptionHandler("Report Date format NOT valid. Expected format: YYYY-MM-DD");
-
+			throw new EntitiesExceptionHandler("Report Date format NOT valid. Expected format: DD/MM/YY");
 		}
-		return result;
+
+		// Further validate logical correctness of the date
+		try {
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+			LocalDate.parse(date, formatter); // This will throw an exception if the date is invalid
+
+		} catch (DateTimeParseException e) {
+
+			throw new EntitiesExceptionHandler("Report Date is not a valid date.");
+		}
+
+		return true; // Return true if the date is valid
 	}
 
 	public boolean validateStockAmount(int stock) throws EntitiesExceptionHandler {

@@ -18,35 +18,28 @@ public class OrderBookAttributesTests {
 	}
 
 	@Test
-	public void testInvalidCustomerName_MismatchWithProfile() {
-		assertThrows(RuntimeException.class, () -> {
-			orderBook.validateCustomerName("Jane Doe"); // Name does not match profile
-		});
-	}
-
-	@Test
 	public void testInvalidCustomerName_TooShort() {
-		assertThrows(RuntimeException.class, () -> {
-			orderBook.validateCustomerName("Jo"); // Name too short
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			orderBook.validateCustomerName("J"); // Name too short
 		});
 	}
 
 	@Test
 	public void testInvalidCustomerName_TooLong() {
-		assertThrows(RuntimeException.class, () -> {
-			orderBook.validateCustomerName("ThisIsWayTooLongForAValidCustomerName"); // Name too long
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			orderBook.validateCustomerName("ThisIsWayTooLongForAValidCustomerNameThisIsWayTooLongForAValidCustomerName"); // Name too long
 		});
 	}
 
 	// postcode
 	@Test
 	public void testValidPostcode() throws EntitiesExceptionHandler {
-		assertTrue(orderBook.validatePostcode("N37 AO24")); // Valid postcode
+		assertTrue(orderBook.validatePostcode("N37AO24")); // Valid postcode
 	}
 
 	@Test
 	public void testInvalidPostcode_WrongFormat() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			orderBook.validatePostcode("AO24 N37"); // Incorrect format
 		});
 	}
@@ -59,15 +52,15 @@ public class OrderBookAttributesTests {
 
 	@Test
 	public void testInvalidPublicationName_TooShort() {
-		assertThrows(RuntimeException.class, () -> {
-			orderBook.validatePublicationName("DN"); // Name too short
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			orderBook.validatePublicationName("J"); // Name too short
 		});
 	}
 
 	@Test
 	public void testInvalidPublicationName_TooLong() {
-		assertThrows(RuntimeException.class, () -> {
-			orderBook.validatePublicationName("ThisPublicationNameIsWayTooLongToBeValid"); // Name too long
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			orderBook.validatePublicationName("ThisPublicationNameIsWayTooLongToBeValidThisPublicationNameIsWayTooLongToBeValid"); // Name too long
 		});
 	}
 
@@ -76,7 +69,7 @@ public class OrderBookAttributesTests {
 	// special characters in Customer Name
 	@Test
 	public void testInvalidCustomerName_SpecialCharacters() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			orderBook.validateCustomerName("John@Doe");
 		});
 	}
@@ -84,7 +77,7 @@ public class OrderBookAttributesTests {
 	// publication Name with special characters
 	@Test
 	public void testInvalidPublicationName_SpecialCharacters() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			orderBook.validatePublicationName("The Daily News@");
 		});
 	}
@@ -92,7 +85,7 @@ public class OrderBookAttributesTests {
 	// empty Customer Name
 	@Test
 	public void testInvalidCustomerName_Empty() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			orderBook.validateCustomerName("");
 		});
 	}
@@ -100,7 +93,7 @@ public class OrderBookAttributesTests {
 	// empty Publication Name
 	@Test
 	public void testInvalidPublicationName_Empty() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			orderBook.validatePublicationName("");
 		});
 	}

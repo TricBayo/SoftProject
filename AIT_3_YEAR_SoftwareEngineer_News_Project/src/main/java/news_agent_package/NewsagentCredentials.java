@@ -74,6 +74,9 @@ public class NewsagentCredentials {
 		} else if (name.length() > 50) {
 			throw new EntitiesExceptionHandler("Newsagent Name exceeds maximum length requirements");
 
+		} else if (!name.matches("[a-zA-Z ]+")) { // Only allows letters and spaces
+			throw new EntitiesExceptionHandler("Newsagent Name contains invalid characters");
+
 		} else {
 			result = true;
 		}
@@ -85,8 +88,9 @@ public class NewsagentCredentials {
 
 		boolean result = false;
 
-		// Regex to ensure password contains at least one number or special character
-		String passwordRegex = "^(?=.*[0-9!@#$%^&*]).{8,15}$";
+		// Regex to ensure password contains at least one letter and one number or
+		// special character
+		String passwordRegex = "^(?=.*[A-Za-z])(?=.*[0-9!@#$%^&*]).{8,15}$";
 		Pattern pattern = Pattern.compile(passwordRegex);
 		Matcher matcher = pattern.matcher(password);
 
@@ -97,11 +101,10 @@ public class NewsagentCredentials {
 			throw new EntitiesExceptionHandler("Password must be between 8 and 15 characters");
 
 		} else if (!matcher.matches()) {
-			throw new EntitiesExceptionHandler("Password must contain at least one number or special character");
+			throw new EntitiesExceptionHandler("Password must contain at least one letter and one number or special character");
 
 		} else {
 			result = true;
-
 		}
 
 		return result;

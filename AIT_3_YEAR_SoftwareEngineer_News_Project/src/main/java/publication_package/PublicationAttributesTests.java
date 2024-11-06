@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.time.format.DateTimeParseException;
-
 import org.junit.jupiter.api.Test;
 
 import for_all_entities_package.EntitiesExceptionHandler;
@@ -22,15 +20,15 @@ public class PublicationAttributesTests {
 
 	@Test
 	public void testInvalidPublicationName_TooShort() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			publication.validatePublicationName("C"); // Name too short
 		});
 	}
 
 	@Test
 	public void testInvalidPublicationName_TooLong() {
-		assertThrows(RuntimeException.class, () -> {
-			publication.validatePublicationName("ThisIsWayTooLongForAValidPublicationName"); // Name too long
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			publication.validatePublicationName("ThisIsWayTooLongForAValidPublicationNameThisIsWayTooLongForAValidPublicationName"); // Name too long
 		});
 	}
 
@@ -41,28 +39,28 @@ public class PublicationAttributesTests {
 
 	@Test
 	public void testInvalidEditionDate_WrongFormat() {
-		assertThrows(DateTimeParseException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			publication.validatePublicationDate("2025/12/25"); // Invalid: Wrong format
 		});
 	}
 
 	@Test
 	public void testInvalidEditionDate_InvalidDay() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			publication.validatePublicationDate("32/12/2025"); // Invalid: Day greater than 31
 		});
 	}
 
 	@Test
 	public void testInvalidEditionDate_InvalidMonth() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			publication.validatePublicationDate("25/13/2025"); // Invalid: Month greater than 12
 		});
 	}
 
 	@Test
 	public void testInvalidEditionDate_ContainsLetters() {
-		assertThrows(DateTimeParseException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			publication.validatePublicationDate("25/Dec/2025");
 		});
 	}
@@ -75,7 +73,7 @@ public class PublicationAttributesTests {
 
 	@Test
 	public void testInvalidStockBalance_Negative() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			publication.validateStockBalance(-1); // Invalid: Negative stock balance
 		});
 	}
@@ -94,10 +92,10 @@ public class PublicationAttributesTests {
 
 	@Test
 	public void testInvalidStockBalance_ShowsErrorMessage() {
-		RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+		EntitiesExceptionHandler exception = assertThrows(EntitiesExceptionHandler.class, () -> {
 			publication.validateStockBalance(-5); // Invalid stock balance
 		});
-		assertEquals("Invalid stock balance", exception.getMessage()); // Validate the correct error message
+		assertEquals("Publication Stock must be a non-negative integer", exception.getMessage()); // Validate the correct error message
 	}
 
 	// publication price
@@ -110,7 +108,7 @@ public class PublicationAttributesTests {
 	@Test
 	public void invalidPublicationPrice() {
 
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			publication.validatePublicationPrice(-12.0); // Name too short
 
 		});

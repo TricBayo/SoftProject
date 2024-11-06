@@ -22,12 +22,17 @@ public class CustomerProfileAttributesTests extends TestCase {
 	@Test
 	public void test_valid_postcode() throws EntitiesExceptionHandler {
 		CustomerProfile customerProfile = new CustomerProfile();
-		assertTrue(customerProfile.validatePostcode("N37 AO24"));
+		assertTrue(customerProfile.validatePostcode("N37AO24"));
 	}
 
 	// Valid phone number is accepted
 	@Test
-	public void test_valid_phone_number() throws EntitiesExceptionHandler {
+	public void test_valid_phone_number_with_spaces() throws EntitiesExceptionHandler {
+		CustomerProfile customerProfile = new CustomerProfile();
+		assertTrue(customerProfile.validatePhoneNumber("+353011234567"));
+	}
+
+	public void test_valid_phone_number_all_together() throws EntitiesExceptionHandler {
 		CustomerProfile customerProfile = new CustomerProfile();
 		assertTrue(customerProfile.validatePhoneNumber("+353 01 123 4567"));
 	}
@@ -59,17 +64,17 @@ public class CustomerProfileAttributesTests extends TestCase {
 	@Test
 	public void test_name_less_than_3_chars_throws_exception() {
 		CustomerProfile customerProfile = new CustomerProfile();
-		assertThrows(RuntimeException.class, () -> {
-			customerProfile.validateName("Jo");
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			customerProfile.validateName("J");
 		});
 	}
 
 	// Name more than 20 characters throws exception
 	@Test
-	public void test_name_more_than_20_chars_throws_exception() {
+	public void test_name_more_than_50_chars_throws_exception() {
 		CustomerProfile customerProfile = new CustomerProfile();
-		assertThrows(RuntimeException.class, () -> {
-			customerProfile.validateName("ThisNameIsWayTooLongToBeValid");
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			customerProfile.validateName("ThisNameIsWayTooLongToBeValThisNameIsWayTooLongToBeVal");
 		});
 	}
 
@@ -77,7 +82,7 @@ public class CustomerProfileAttributesTests extends TestCase {
 	@Test
 	public void testInvalidName_ContainsNumbers() {
 		CustomerProfile customerProfile = new CustomerProfile();
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			customerProfile.validateName("John123"); // Name contains digits
 		});
 	}
@@ -86,7 +91,7 @@ public class CustomerProfileAttributesTests extends TestCase {
 	@Test
 	public void testInvalidName_ContainsSpecialCharacters() {
 		CustomerProfile customerProfile = new CustomerProfile();
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			customerProfile.validateName("John@Doe"); // Contains special character
 		});
 	}
@@ -95,7 +100,7 @@ public class CustomerProfileAttributesTests extends TestCase {
 	@Test
 	public void test_invalid_postcode_incorrect_length() {
 		CustomerProfile customerProfile = new CustomerProfile();
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			customerProfile.validatePostcode("N37 A02"); // Incorrect length
 		});
 	}
@@ -104,7 +109,7 @@ public class CustomerProfileAttributesTests extends TestCase {
 	@Test
 	public void test_invalid_postcode_wrong_format() {
 		CustomerProfile customerProfile = new CustomerProfile();
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			customerProfile.validatePostcode("37N AO24"); // Incorrect format
 		});
 	}
@@ -113,7 +118,7 @@ public class CustomerProfileAttributesTests extends TestCase {
 	@Test
 	public void testInvalidPostcode_ContainsSpecialCharacters() {
 		CustomerProfile customerProfile = new CustomerProfile();
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			customerProfile.validatePostcode("N37@AO24"); // Contains special character
 		});
 	}
@@ -122,25 +127,18 @@ public class CustomerProfileAttributesTests extends TestCase {
 	@Test
 	public void test_phone_number_without_country_code_throws_exception() {
 		CustomerProfile customerProfile = new CustomerProfile();
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			customerProfile.validatePhoneNumber("01 123 4567"); // Missing country code
 		});
 	}
 
 	// Phone number with wrong format throws exception
-	@Test
-	public void test_invalid_phone_number_wrong_format() {
-		CustomerProfile customerProfile = new CustomerProfile();
-		assertThrows(RuntimeException.class, () -> {
-			customerProfile.validatePhoneNumber("+353011234567"); // Incorrect format
-		});
-	}
 
 	// Check for invalid spaces
 	@Test
 	public void testInvalidPhoneNumber_ExtraSpaces() {
 		CustomerProfile customerProfile = new CustomerProfile();
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			customerProfile.validatePhoneNumber("+353  01 123 4567"); // Double space between code and number
 		});
 	}
@@ -149,7 +147,7 @@ public class CustomerProfileAttributesTests extends TestCase {
 	@Test
 	public void testInvalidPhoneNumber_ShortLength() {
 		CustomerProfile customerProfile = new CustomerProfile();
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			customerProfile.validatePhoneNumber("+353 01 123"); // Too short phone number
 		});
 	}
@@ -158,7 +156,7 @@ public class CustomerProfileAttributesTests extends TestCase {
 	@Test
 	public void test_invalid_email_missing_at_symbol() {
 		CustomerProfile customerProfile = new CustomerProfile();
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			customerProfile.validateEmail("userexample.com"); // Missing @ symbol
 		});
 	}
@@ -167,7 +165,7 @@ public class CustomerProfileAttributesTests extends TestCase {
 	@Test
 	public void test_invalid_email_missing_domain() {
 		CustomerProfile customerProfile = new CustomerProfile();
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			customerProfile.validateEmail("user@.com"); // Missing domain
 		});
 	}
@@ -176,7 +174,7 @@ public class CustomerProfileAttributesTests extends TestCase {
 	@Test
 	public void test_email_missing_tld_throws_exception() {
 		CustomerProfile customerProfile = new CustomerProfile();
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			customerProfile.validateEmail("user@example");
 		});
 	}
@@ -185,7 +183,7 @@ public class CustomerProfileAttributesTests extends TestCase {
 	@Test
 	public void test_invalid_monthly_payment_status() {
 		CustomerProfile customerProfile = new CustomerProfile();
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			customerProfile.validatePaymentStatus(4); // More than 3 months delayed
 		});
 	}
@@ -194,7 +192,7 @@ public class CustomerProfileAttributesTests extends TestCase {
 	@Test
 	public void testInvalidEmail_SpecialCharactersInDomain() {
 		CustomerProfile customerProfile = new CustomerProfile();
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			customerProfile.validateEmail("user@example$.com"); // Special character in domain
 		});
 	}

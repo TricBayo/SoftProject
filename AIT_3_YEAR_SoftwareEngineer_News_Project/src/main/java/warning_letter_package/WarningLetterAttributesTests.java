@@ -19,7 +19,7 @@ public class WarningLetterAttributesTests {
 
 	@Test
 	public void testInvalidAmountInDebt_Negative() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			warningLetter.validateAmountInDebt(-10.00); // Invalid: Negative amount in debt
 		});
 	}
@@ -32,27 +32,27 @@ public class WarningLetterAttributesTests {
 
 	@Test
 	public void testInvalidName_TooShort() {
-		assertThrows(RuntimeException.class, () -> {
-			warningLetter.validateName("Jo"); // Invalid: Too short
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			warningLetter.validateName("J"); // Invalid: Too short
 		});
 	}
 
 	@Test
 	public void testInvalidName_TooLong() {
-		assertThrows(RuntimeException.class, () -> {
-			warningLetter.validateName("ThisNameIsWayTooLongToBeValidForACustomerProfile"); // Invalid: Too long
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			warningLetter.validateName("ThisNameIsWayTooLongToBeValidForACustomerProfileThisNameIsWayTooLongToBeValidForACustomerProfile"); // Invalid: Too long
 		});
 	}
 
 	// postcode
 	@Test
 	public void testValidPostcode() throws EntitiesExceptionHandler {
-		assertTrue(warningLetter.validatePostcode("N37 AO24")); // Valid postcode format
+		assertTrue(warningLetter.validatePostcode("N37AO24")); // Valid postcode format
 	}
 
 	@Test
 	public void testInvalidPostcode_WrongFormat() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			warningLetter.validatePostcode("N3724AO"); // Invalid: Wrong format
 		});
 	}
@@ -71,7 +71,7 @@ public class WarningLetterAttributesTests {
 
 	@Test
 	public void testValidMonthlyPaymentStatusLessThanZero() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			warningLetter.validatePaymentStatus(-1); // Invalid Payment Status (less than zero)
 		});
 	}

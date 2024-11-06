@@ -1,5 +1,8 @@
 package publication_package;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -91,25 +94,24 @@ public class Publication {
 			throw new EntitiesExceptionHandler("Publication Name NOT specified");
 
 		} else if (name.length() < 2) {
-			throw new EntitiesExceptionHandler("Publication Name must be at least 2 characters long");
+			throw new EntitiesExceptionHandler("Publication Name does not meet minimum length requirements");
 
-		} else if (name.length() > 100) {
+		} else if (name.length() > 50) {
+			throw new EntitiesExceptionHandler("Publication Name exceeds maximum length requirements");
 
-			throw new EntitiesExceptionHandler("Publication Name exceeds maximum length of 100 characters");
+		} else if (!name.matches("[a-zA-Z ]+")) { // Only allows letters and spaces
+			throw new EntitiesExceptionHandler("Publication Name contains invalid characters");
+
 		} else {
 			result = true;
-
 		}
 
 		return result;
 	}
 
 	public boolean validatePublicationDate(String date) throws EntitiesExceptionHandler {
-
-		boolean result = false;
-
-		// Regex to validate date in format YYYY-MM-DD
-		String dateRegex = "^\\d{4}-\\d{2}-\\d{2}$";
+		// Regex to validate date format as DD/MM/YYYY
+		String dateRegex = "^\\d{2}/\\d{2}/\\d{4}$";
 		Pattern pattern = Pattern.compile(dateRegex);
 		Matcher matcher = pattern.matcher(date);
 
@@ -117,14 +119,21 @@ public class Publication {
 			throw new EntitiesExceptionHandler("Publication Date NOT specified");
 
 		} else if (!matcher.matches()) {
-			throw new EntitiesExceptionHandler("Publication Date format NOT valid. Expected format: YYYY-MM-DD");
-
-		} else {
-			result = true;
-
+			throw new EntitiesExceptionHandler("Publication Date format NOT valid. Expected format: DD/MM/YY");
 		}
 
-		return result;
+		// Further validate logical correctness of the date
+		try {
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+			LocalDate.parse(date, formatter); // This will throw an exception if the date is invalid
+
+		} catch (DateTimeParseException e) {
+
+			throw new EntitiesExceptionHandler("Publication Date is not a valid date.");
+		}
+
+		return true; // Return true if the date is valid
 	}
 
 	public boolean validateStockBalance(int stock) throws EntitiesExceptionHandler {

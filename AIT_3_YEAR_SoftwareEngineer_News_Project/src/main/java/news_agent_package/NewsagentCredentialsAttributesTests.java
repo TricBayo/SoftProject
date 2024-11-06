@@ -19,15 +19,15 @@ public class NewsagentCredentialsAttributesTests {
 
 	@Test
 	public void testInvalidNewsagentName_TooShort() {
-		assertThrows(RuntimeException.class, () -> {
-			newsagent.validateNewsagentName("Jo"); // Name too short
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			newsagent.validateNewsagentName("J"); // Name too short
 		});
 	}
 
 	@Test
 	public void testInvalidNewsagentName_TooLong() {
-		assertThrows(RuntimeException.class, () -> {
-			newsagent.validateNewsagentName("ThisNameIsWayTooLongToBeValidForNewsagent"); // Name too long
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			newsagent.validateNewsagentName("ThisNameIsWayTooLongToBeValidForNewsagentThisNameIsWayTooLongToBeValidForNewsagent"); // Name too long
 		});
 	}
 
@@ -39,21 +39,21 @@ public class NewsagentCredentialsAttributesTests {
 
 	@Test
 	public void testInvalidNewsagentPassword_TooShort() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			newsagent.validateNewsagentPassword("Pass1!"); // Password too short (less than 8 characters)
 		});
 	}
 
 	@Test
 	public void testInvalidNewsagentPassword_TooLong() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			newsagent.validateNewsagentPassword("ThisIsAVeryLongPassword123!"); // Password too long (more than 15 characters)
 		});
 	}
 
 	@Test
 	public void testInvalidNewsagentPassword_NoNumberOrSpecialChar() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			newsagent.validateNewsagentPassword("Password"); // Missing number or special character
 		});
 	}
@@ -63,7 +63,7 @@ public class NewsagentCredentialsAttributesTests {
 	// newsagent name with numbers
 	@Test
 	public void testInvalidNewsagentName_ContainsNumbers() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			newsagent.validateNewsagentName("John123");
 		});
 	}
@@ -71,7 +71,7 @@ public class NewsagentCredentialsAttributesTests {
 	// newsagent name with special characters
 	@Test
 	public void testInvalidNewsagentName_ContainsSpecialCharacters() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			newsagent.validateNewsagentName("John@Doe");
 		});
 	}
@@ -79,7 +79,7 @@ public class NewsagentCredentialsAttributesTests {
 	// password with only special characters
 	@Test
 	public void testInvalidNewsagentPassword_OnlySpecialChars() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			newsagent.validateNewsagentPassword("!!!!!!!!");
 		});
 	}
@@ -87,7 +87,7 @@ public class NewsagentCredentialsAttributesTests {
 	// password with only numbers
 	@Test
 	public void testInvalidNewsagentPassword_OnlyNumbers() {
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
 			newsagent.validateNewsagentPassword("12345678");
 		});
 	}
