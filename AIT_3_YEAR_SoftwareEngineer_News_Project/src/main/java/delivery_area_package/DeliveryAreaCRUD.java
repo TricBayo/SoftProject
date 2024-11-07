@@ -69,7 +69,7 @@ public class DeliveryAreaCRUD {
 	}
 
 	// ---------------------------- Update ------------------------- //
-	public boolean updateDailySummaryReportById(int id, DeliveryArea updateDa) {
+	public boolean updateDeliveryAreaById(int id, DeliveryArea updateDa) {
 
 		boolean updateSuccessful = true;
 

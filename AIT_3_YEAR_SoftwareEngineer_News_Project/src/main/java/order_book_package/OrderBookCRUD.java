@@ -128,4 +128,27 @@ public class OrderBookCRUD {
 		return deleteSuccessful;
 	}
 
+	// ------------------------------ Read by ID ----------------------------- //
+	public ResultSet readOrderBookById(int id) {
+
+    	try {
+        // Get the connection from MySQLAccess
+        	Connection connection = orderBookAccess.getConnection();
+
+        // Create prepared statement to issue SQL query to the database for a specific id
+        	preparedStatement = connection.prepareStatement("SELECT * FROM Software_Project_NewsCompany.order_book WHERE id = ?");
+        	preparedStatement.setInt(1, id);
+
+        // Execute the query
+        	resultSet = preparedStatement.executeQuery();
+
+    	} catch (Exception e) {
+        e.printStackTrace();
+        resultSet = null;
+    }
+
+    return resultSet;
+}
+
+
 }
