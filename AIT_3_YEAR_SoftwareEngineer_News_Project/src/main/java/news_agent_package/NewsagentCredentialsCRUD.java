@@ -1,4 +1,4 @@
-package new_agent_package;
+package news_agent_package;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

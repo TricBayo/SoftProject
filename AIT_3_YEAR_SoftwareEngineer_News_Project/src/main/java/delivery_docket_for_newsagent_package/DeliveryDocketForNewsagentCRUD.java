@@ -38,7 +38,7 @@ public class DeliveryDocketForNewsagentCRUD {
 			preparedStatement.setString(2, dD.getDeliveryPersonName());
 			preparedStatement.setString(3, dD.getOrderDate());
 			preparedStatement.setString(4, dD.getPostcode());
-			preparedStatement.setString(5, dD.getTrackNumber());
+			preparedStatement.setInt(5, dD.getTrackNumber());
 
 			preparedStatement.executeUpdate();
 
@@ -87,7 +87,7 @@ public class DeliveryDocketForNewsagentCRUD {
 			preparedStatement.setString(2, updateDd.getDeliveryPersonName());
 			preparedStatement.setString(3, updateDd.getOrderDate());
 			preparedStatement.setString(4, updateDd.getPostcode());
-			preparedStatement.setString(5, updateDd.getTrackNumber());
+			preparedStatement.setInt(5, updateDd.getTrackNumber());
 
 			preparedStatement.setInt(6, id);
 
