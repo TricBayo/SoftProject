@@ -23,7 +23,7 @@ public class MonthlyInvoiceCRUD {
 	}
 
 	// -------------------------------- Create --------------------------------- //
-	public boolean createMonthlyInvoice(MonthyInvoice m) {
+	public boolean createMonthlyInvoice(MonthlyInvoice m) {
 
 		boolean insertSuccessful = true;
 
@@ -37,7 +37,7 @@ public class MonthlyInvoiceCRUD {
 			preparedStatement.setString(1, m.getName());
 			preparedStatement.setString(2, m.getPostcode());
 			preparedStatement.setString(3, m.getPaymentDate());
-			preparedStatement.setDouble(4, m.getAmountToPay());
+			preparedStatement.setString(4, m.getAmountToPay());
 
 			preparedStatement.executeUpdate();
 
@@ -71,7 +71,7 @@ public class MonthlyInvoiceCRUD {
 	}
 
 	// --------------------------- Update ------------------------ //
-	public boolean updateMonthlyInvoiceById(int id, MonthyInvoice updateM) {
+	public boolean updateMonthlyInvoiceById(int id, MonthlyInvoice updateM) {
 
 		boolean updateSuccessful = true;
 
@@ -85,7 +85,7 @@ public class MonthlyInvoiceCRUD {
 			preparedStatement.setString(1, updateM.getName());
 			preparedStatement.setString(2, updateM.getPostcode());
 			preparedStatement.setString(3, updateM.getPaymentDate());
-			preparedStatement.setDouble(4, updateM.getAmountToPay());
+			preparedStatement.setString(4, updateM.getAmountToPay());
 
 			preparedStatement.setInt(5, id);
 

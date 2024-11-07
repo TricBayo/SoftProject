@@ -35,7 +35,7 @@ public class DeliveryAreaCRUD {
 			preparedStatement = connection.prepareStatement("INSERT INTO Software_Project_NewsCompany.delivery_area VALUES (default, ?, ?)");
 
 			preparedStatement.setString(1, dA.getName());
-			preparedStatement.setInt(2, dA.getPostcode());
+			preparedStatement.setString(2, dA.getPostcode());
 
 			preparedStatement.executeUpdate();
 
@@ -81,7 +81,7 @@ public class DeliveryAreaCRUD {
 			preparedStatement = connection.prepareStatement("UPDATE Software_Project_NewsCompany.delivery_area SET name=?, postcode=? WHERE id=?");
 
 			preparedStatement.setString(1, updateDa.getName());
-			preparedStatement.setInt(2, updateDa.getPostcode());
+			preparedStatement.setString(2, updateDa.getPostcode());
 			preparedStatement.setInt(3, id);
 
 			preparedStatement.executeUpdate();
