@@ -136,7 +136,7 @@ public class OrderBookCRUD {
         	Connection connection = orderBookAccess.getConnection();
 
         // Create prepared statement to issue SQL query to the database for a specific id
-        	preparedStatement = connection.prepareStatement("SELECT * FROM Software_Project_NewsCompany.order_book WHERE id = ?");
+        	preparedStatement = connection.prepareStatement("SELECT FROM Software_Project_NewsCompany.order_book WHERE id = ?");
         	preparedStatement.setInt(1, id);
 
         // Execute the query
