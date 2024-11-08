@@ -1,73 +1,80 @@
 package command;
 
 
+package command;
+
+
 
 
 import java.sql.ResultSet;
 import java.util.Scanner;
 
-public class SummaryReportCommandLine {
 
+public class SummaryReportCommandLine implements CommandLinesExecution {
+	
+	Scanner scanner = new Scanner(System.in);
+	
 	// Present Customer with Functionalities
-	private static void summaryReportFuctionalities() {
+		private static void summaryReportFuctionalities() {
 
-		System.out.println();
-		System.out.println("=============================================");
-		System.out.println("Please choose ONE of the following options:");
-		System.out.println("1. Create Summary Report");
-		System.out.println("2. Read ALL Summary Report Records");
-		System.out.println("3. Update ALL Summary Report Records");
-		System.out.println("4. Delete Summary Report Record by ID");
-		System.out.println("99. Close the NewsAgent Application");
-		System.out.println("=============================================");
-		System.out.println();
-
-		// The option chosen by user will be read by scanner inside the Main method
-
-	}
-
-	// Print The Contents of the Full Customer Table to News Agent Persona
-	private static boolean printSummaryReportTable(ResultSet rs) throws Exception {
-
-		System.out.println("------------------------------------------------------------------------------------------------------------------------------------");
-
-		System.out.println("Table: " + rs.getMetaData().getTableName(1));
-
-		for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
-
-			System.out.printf("%30s", rs.getMetaData().getColumnName(i));
-
-		}
-
-		System.out.println();
-		while (rs.next()) {
-
-			int id = rs.getInt("id");
-			String Samount = rs.getString("Stock Amount");
-			String Did = rs.getString("Driver id");
-			String Pid = rs.getString("Publication id");
-			String Rdate = rs.getString("Report Date");
-			
-
-			System.out.printf("%30s", id);
-			System.out.printf("%30s", Samount);
-			System.out.printf("%30s", Did);
-			System.out.printf("%30s", Pid);
-			System.out.printf("%30s", Rdate);
-		
+			System.out.println();
+			System.out.println("=============================================");
+			System.out.println("Please choose ONE of the following options:");
+			System.out.println("1. Create Summary Report");
+			System.out.println("2. Read ALL Summary Report Records");
+			System.out.println("3. Update ALL Summary Report Records");
+			System.out.println("4. Delete Summary Report Record by ID");
+			System.out.println("99. Close the NewsAgent Application");
+			System.out.println("=============================================");
 			System.out.println();
 
+			// The option chosen by user will be read by scanner inside the Main method
+
 		}
-		System.out.println("--------------------------------------------------------------------------------------------------------------------------------------");
 
-		return true;
+		// Print The Contents of the Full Customer Table to News Agent Persona
+		private static boolean printSummaryReportTable(ResultSet rs) throws Exception {
 
-	}
+			System.out.println("------------------------------------------------------------------------------------------------------------------------------------");
 
-	// Main
-	public static void main(String[] args) {
+			System.out.println("Table: " + rs.getMetaData().getTableName(1));
 
-		// Create the Database Object
+			for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+
+				System.out.printf("%30s", rs.getMetaData().getColumnName(i));
+
+			}
+
+			System.out.println();
+			while (rs.next()) {
+
+				int id = rs.getInt("id");
+				String Samount = rs.getString("Stock Amount");
+				String Did = rs.getString("Driver id");
+				String Pid = rs.getString("Publication id");
+				String Rdate = rs.getString("Report Date");
+				
+
+				System.out.printf("%30s", id);
+				System.out.printf("%30s", Samount);
+				System.out.printf("%30s", Did);
+				System.out.printf("%30s", Pid);
+				System.out.printf("%30s", Rdate);
+			
+				System.out.println();
+
+			}
+			System.out.println("--------------------------------------------------------------------------------------------------------------------------------------");
+
+			return true;
+
+		}
+
+	
+	
+	
+	@Override
+	public void execute() {
 		try {
 
 			SummaryReportCRUD connect = new SummaryReportCRUD();
@@ -226,5 +233,8 @@ public class SummaryReportCommandLine {
 		}
 
 	}
+
+
+	
 
 }
