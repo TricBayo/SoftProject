@@ -1,6 +1,6 @@
 package customer_profile_package;
 
-import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertThrows; 
 
 import org.junit.Test;
 
