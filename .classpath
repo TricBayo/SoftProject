@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="AIT_3_YEAR_SoftwareEngineer_News_Project/src/main/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
+	<classpathentry exported="true" kind="lib" path="AIT_3_YEAR_SoftwareEngineer_News_Project/src/main/webapp/WEB-INF/lib/hsqldb.jar"/>
+	<classpathentry exported="true" kind="lib" path="AIT_3_YEAR_SoftwareEngineer_News_Project/lib/javax.servlet.jsp.jstl-1.2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="AIT_3_YEAR_SoftwareEngineer_News_Project/lib/javax.servlet.jsp.jstl-api-1.2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="AIT_3_YEAR_SoftwareEngineer_News_Project/lib/mysql-connector-java-8.0.22.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

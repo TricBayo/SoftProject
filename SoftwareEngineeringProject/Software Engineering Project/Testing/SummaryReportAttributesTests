@@ -1,0 +1,142 @@
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
+public class SummaryReportAttributesTests {
+
+    SummaryReportAttributesTests summaryReport = new SummaryReportAttributesTests();
+
+    // customer id 
+    @Test
+    public void testValidCustomerId() {
+        assertTrue(summaryReport.validateCustomerId(500));  // Valid Customer ID within range (1-1000)
+    }
+
+    @Test
+    public void testInvalidCustomerId_TooLow() {
+        assertThrows(RuntimeException.class, () -> {
+            summaryReport.validateCustomerId(0);  // Invalid: ID too low
+        });
+    }
+
+    @Test
+    public void testInvalidCustomerId_TooHigh() {
+        assertThrows(RuntimeException.class, () -> {
+            summaryReport.validateCustomerId(1001);  // Invalid: ID too high
+        });
+    }
+
+    // stock amount 
+    @Test
+    public void testValidStockAmount() {
+        assertTrue(summaryReport.validateStockAmount(50));  // Valid stock amount (positive number)
+    }
+
+    @Test
+    public void testInvalidStockAmount_Negative() {
+        assertThrows(RuntimeException.class, () -> {
+            summaryReport.validateStockAmount(-10);  // Invalid: Negative stock amount
+        });
+    }
+
+    @Test
+    public void testOutOfStock_Zero() {
+        assertTrue(summaryReport.publicationOutOfStock("0"));  // Zero stock amount (out of stock)
+        });
+    }
+
+    // driver id
+    @Test
+    public void testValidDriverId() {
+        assertTrue(summaryReport.validateDriverId("D123"));  // Valid driver ID format
+    }
+
+    @Test
+    public void testInvalidDriverId_TooShort() {
+        assertThrows(RuntimeException.class, () -> {
+            summaryReport.validateDriverId("D1");  // Invalid: Too short
+        });
+    }
+
+    @Test
+    public void testInvalidDriverId_TooLong() {
+        assertThrows(RuntimeException.class, () -> {
+            summaryReport.validateDriverId("D1234567");  // Invalid: Too long
+        });
+    }
+
+    // publication id
+    @Test
+    public void testValidPublicationId() {
+        assertTrue(summaryReport.validatePublicationId(100));  // Valid publication ID (positive integer)
+    }
+
+    @Test
+    public void testInvalidPublicationId_TooLow() {
+        assertThrows(RuntimeException.class, () -> {
+            summaryReport.validatePublicationId(0);  // Invalid: Publication ID must be greater than 0
+        });
+    }
+
+    @Test
+    public void testInvalidPublicationId_Negative() {
+        assertThrows(RuntimeException.class, () -> {
+            summaryReport.validatePublicationId(-10);  // Invalid: Negative publication ID
+        });
+    }
+
+    // report date
+    @Test
+    public void testValidReportDate() {
+        assertTrue(summaryReport.validateReportDate("25/12/2025"));  // Valid date in DD/MM/YYYY format
+    }
+
+    @Test
+    public void testInvalidReportDate_WrongFormat() {
+        assertThrows(DateTimeParseException.class, () -> {
+            summaryReport.validateReportDate("2025/12/25");  // Invalid: Wrong format (YYYY/MM/DD)
+        });
+    }
+
+    @Test
+    public void testInvalidReportDate_InvalidDay() {
+        assertThrows(RuntimeException.class, () -> {
+            summaryReport.validateReportDate("32/12/2025");  // Invalid: Day greater than 31
+        });
+    }
+
+    @Test
+    public void testInvalidReportDate_InvalidMonth() {
+        assertThrows(RuntimeException.class, () -> {
+            summaryReport.validateReportDate("25/13/2025");  // Invalid: Month greater than 12
+        });
+    }
+
+    // extra tests
+
+    // non-numeric Publication ID
+    @Test
+    public void testInvalidPublicationId_NonNumeric() {
+        assertThrows(RuntimeException.class, () -> {
+            summaryReport.validatePublicationId(Integer.parseInt("ABC")); 
+        });
+    }
+
+    // report Date with letters
+    @Test
+    public void testInvalidReportDate_ContainsLetters() {
+        assertThrows(DateTimeParseException.class, () -> {
+            summaryReport.validateReportDate("25/Dec/2025");  // Invalid: Date contains letters
+        });
+    }
+
+    // driver ID with special characters
+    @Test
+    public void testInvalidDriverId_SpecialCharacters() {
+        assertThrows(RuntimeException.class, () -> {
+            summaryReport.validateDriverId("D123!"); 
+        });
+    }
+}

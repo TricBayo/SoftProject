@@ -1,0 +1,120 @@
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
+public class PublicationAttributesTests {
+
+    PublicationAttributesTests publication = new PublicationAttributesTests();
+
+    // publication id
+    @Test
+    public void testValidPublicationID() {
+        assertTrue(publication.validatePublicationID(100));  // Valid Publication ID (greater than 0)
+    }
+
+    @Test
+    public void testInvalidPublicationID_Zero() {
+        assertThrows(RuntimeException.class, () -> {
+            publication.validatePublicationID(0);  // Invalid: Publication ID must be greater than 0
+        });
+    }
+
+    @Test
+    public void testInvalidPublicationID_Negative() {
+        assertThrows(RuntimeException.class, () -> {
+            publication.validatePublicationID(-1);  // Invalid: Negative ID
+        });
+    }
+
+    // edition date
+    public void testValidEditionDate() {
+        assertTrue(publication.validateEditionDate("25/12/2025"));  // Valid date in DD/MM/YYYY format
+    }
+
+    @Test
+    public void testInvalidEditionDate_WrongFormat() {
+        assertThrows(DateTimeParseException.class, () -> {
+            publication.validateEditionDate("2025/12/25");  // Invalid: Wrong format
+        });
+    }
+
+    @Test
+    public void testInvalidEditionDate_InvalidDay() {
+        assertThrows(RuntimeException.class, () -> {
+            publication.validateEditionDate("32/12/2025");  // Invalid: Day greater than 31
+        });
+    }
+
+    @Test
+    public void testInvalidEditionDate_InvalidMonth() {
+        assertThrows(RuntimeException.class, () -> {
+            publication.validateEditionDate("25/13/2025");  // Invalid: Month greater than 12
+        });
+    }
+
+    // stock balance
+    @Test
+    public void testValidStockBalance() {
+        assertTrue(publication.validateStockBalance(50));  // Valid stock balance (>= 0)
+    }
+
+    @Test
+    public void testInvalidStockBalance_Negative() {
+        assertThrows(RuntimeException.class, () -> {
+            publication.validateStockBalance(-1);  // Invalid: Negative stock balance
+        });
+    }
+
+    // incrementing stock
+    @Test
+    public void testIncrementStock() {
+        int initialStock = 50;
+        int newStock = publication.incrementStock(initialStock);
+        assertEquals(51, newStock);  // Valid: Stock incremented by 1
+    }
+
+    // decrementing stock
+    @Test
+    public void testIncrementStock() {
+        int initialStock = 50;
+        int newStock = publication.decrementStock(initialStock);
+        assertEquals(49, newStock);  // Valid: Stock decremented by 1 
+    }
+
+    // extra tests
+
+    // publication ID with invalid data type
+    @Test
+    public void testInvalidPublicationID_NonInteger() {
+        assertThrows(RuntimeException.class, () -> {
+            publication.validatePublicationID(Integer.parseInt("ABC"));  // Invalid input: Not a number
+        });
+    }
+
+    // edition Date with letters
+    @Test
+    public void testInvalidEditionDate_ContainsLetters() {
+        assertThrows(DateTimeParseException.class, () -> {
+            publication.validateEditionDate("25/Dec/2025");  
+        });
+    }
+
+    // stock increment when stock is zero
+    @Test
+    public void testIncrementStock_FromZero() {
+        int initialStock = 0;
+        int newStock = publication.incrementStock(initialStock);
+        assertEquals(1, newStock);  // Stock should be incremented from 0 to 1
+    }
+
+    // error message for invalid stock
+    @Test
+    public void testInvalidStockBalance_ShowsErrorMessage() {
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            publication.validateStockBalance(-5);  // Invalid stock balance
+        });
+        assertEquals("Invalid stock balance", exception.getMessage());  // Validate the correct error message
+    }
+}

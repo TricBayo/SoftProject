@@ -1,0 +1,183 @@
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+public class WarningLetterAttributesTests {
+
+    WarningLetterAttributesTests warningLetter = new WarningLetterAttributesTests();
+
+    // amount in debt
+    @Test
+    public void testValidAmountInDebt() {
+        assertTrue(warningLetter.validateAmountInDebt(100.50));  // Valid amount in debt (double)
+    }
+
+    @Test
+    public void testInvalidAmountInDebt_Negative() {
+        assertThrows(RuntimeException.class, () -> {
+            warningLetter.validateAmountInDebt(-10.00);  // Invalid: Negative amount in debt
+        });
+    }
+
+    // invoice id
+    @Test
+    public void testValidInvoiceID() {
+        assertTrue(warningLetter.validateInvoiceID("500"));  // Valid invoice ID within range
+    }
+
+    @Test
+    public void testInvalidInvoiceID_TooLow() {
+        assertThrows(RuntimeException.class, () -> {
+            warningLetter.validateInvoiceID("0");  // Invalid: ID too low
+        });
+    }
+
+    @Test
+    public void testInvalidInvoiceID_TooHigh() {
+        assertThrows(RuntimeException.class, () -> {
+            warningLetter.validateInvoiceID("1001");  // Invalid: ID too high
+        });
+    }
+
+    // invoice amount
+    @Test
+    public void testValidInvoiceAmount() {
+        assertTrue(warningLetter.validateInvoiceAmount(200.75));  // Valid invoice amount
+    }
+
+    @Test
+    public void testInvalidInvoiceAmount_Negative() {
+        assertThrows(RuntimeException.class, () -> {
+            warningLetter.validateInvoiceAmount(-50.00);  // Invalid: Negative invoice amount
+        });
+    }
+
+    // customer id
+    @Test
+    public void testValidCustomerID() {
+        assertTrue(warningLetter.validateCustomerID("AE1234567890"));  // Valid customer ID format
+    }
+
+    @Test
+    public void testInvalidCustomerID_WrongFormat() {
+        assertThrows(RuntimeException.class, () -> {
+            warningLetter.validateCustomerID("A1234567890");  // Invalid: Missing a letter
+        });
+    }
+
+    // customer name
+    @Test
+    public void testValidName() {
+        assertTrue(warningLetter.validateName("John Doe"));  // Valid name (3 to 20 characters)
+    }
+
+    @Test
+    public void testInvalidName_TooShort() {
+        assertThrows(RuntimeException.class, () -> {
+            warningLetter.validateName("Jo");  // Invalid: Too short
+        });
+    }
+
+    @Test
+    public void testInvalidName_TooLong() {
+        assertThrows(RuntimeException.class, () -> {
+            warningLetter.validateName("ThisNameIsWayTooLongToBeValidForACustomerProfile");  // Invalid: Too long
+        });
+    }
+
+    // postcode
+    @Test
+    public void testValidPostcode() {
+        assertTrue(warningLetter.validatePostcode("N37 AO24"));  // Valid postcode format
+    }
+
+    @Test
+    public void testInvalidPostcode_WrongFormat() {
+        assertThrows(RuntimeException.class, () -> {
+            warningLetter.validatePostcode("N3724AO");  // Invalid: Wrong format
+        });
+    }
+
+    // phone number
+    @Test
+    public void testValidPhoneNumber() {
+        assertTrue(warningLetter.validatePhoneNumber("+353 00 000 0000"));  // Valid phone number
+    }
+
+    @Test
+    public void testInvalidPhoneNumber_WrongFormat() {
+        assertThrows(RuntimeException.class, () -> {
+            warningLetter.validatePhoneNumber("353000000000");  // Invalid: Missing country code
+        });
+    }
+
+    // email
+    @Test
+    public void testValidEmail() {
+        assertTrue(warningLetter.validateEmail("john.doe@example.com"));  // Valid email format
+    }
+
+    @Test
+    public void testInvalidEmail_MissingAtSign() {
+        assertThrows(RuntimeException.class, () -> {
+            warningLetter.validateEmail("johndoe.example.com");  // Invalid: Missing @ sign
+        });
+    }
+
+    // monthly payment status
+    @Test
+    public void testValidMonthlyPaymentStatus() {
+        assertTrue(warningLetter.validateMonthlyPaymentStatus(2));  // Valid payment status (less than 3 months delayed)
+    }
+
+    @Test
+    public void testInvalidMonthlyPaymentStatus() {
+        assertThrows(RuntimeException.class, () -> {
+            warningLetter.validateMonthlyPaymentStatus(4);  // Invalid: Payment delayed for more than 3 months
+        });
+    }
+
+    // invoice deadline
+    @Test
+    public void testValidInvoiceDeadline() {
+        assertTrue(warningLetter.validateInvoiceDeadline("25/12/2025"));  // Valid date format (DD/MM/YYYY)
+    }
+
+    @Test
+    public void testInvalidInvoiceDeadline_WrongFormat() {
+        assertThrows(RuntimeException.class, () -> {
+            warningLetter.validateInvoiceDeadline("2025-12-25");  // Invalid: Wrong date format (YYYY-MM-DD)
+        });
+    }
+
+    // extra Tests for Warning Letter Specific Logic
+
+    // unpaid invoices == 3 generates warning letter
+    @Test
+    public void testWarningLetterGeneratedForThreeUnpaidInvoices() {
+        assertTrue(warningLetter.generateWarningLetter(3));  
+    }
+
+    // outstanding orders withheld when warning letter generated
+    @Test
+    public void testOutstandingOrdersWithheld() {
+        assertTrue(warningLetter.withholdOutstandingOrders(true));  // Valid: Orders are withheld
+    }
+
+    // orders moved back to order book after payment
+    @Test
+    public void testOrdersMovedBackToOrderBook() {
+        assertTrue(warningLetter.moveOrdersBackToOrderBook(true));  // Valid: Orders moved back after payment
+    }
+
+    // warning letter contains correct area code
+    @Test
+    public void testValidAreaCodeInWarningLetter() {
+        assertTrue(warningLetter.validateAreaCode("N37"));  
+    }
+
+    // warning letter displays unpaid amounts as double
+    @Test
+    public void testUnpaidAmountDisplayedAsDouble() {
+        assertTrue(warningLetter.validateUnpaidAmountFormat(150.75));  
+    }
+}

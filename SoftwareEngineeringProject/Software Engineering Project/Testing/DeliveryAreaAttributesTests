@@ -1,0 +1,116 @@
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+public class DeliveryAreaAttributesTests {
+
+    DeliveryAreaAttributesTests deliveryArea = new DeliveryAreaAttributesTests();
+
+    // area ID tests 
+    @Test
+    public void testValidDeliveryAreaID() {
+        assertTrue(deliveryArea.validateDeliveryAreaID(1));  // Valid Delivery Area ID (> 0)
+    }
+
+    @Test
+    public void testInvalidDeliveryAreaID_Zero() {
+        assertThrows(RuntimeException.class, () -> {
+            deliveryArea.validateDeliveryAreaID(0);  // Invalid: Area ID is 0
+        });
+    }
+
+    @Test
+    public void testInvalidDeliveryAreaID_Negative() {
+        assertThrows(RuntimeException.class, () -> {
+            deliveryArea.validateDeliveryAreaID(-1);  // Invalid: Negative Area ID
+        });
+    }
+
+    // area postcode tests
+    @Test
+    public void testValidPostcode() {
+        assertTrue(deliveryArea.validatePostcode("N37 AO24"));  // Valid postcode
+    }
+
+    @Test
+    public void testInvalidPostcode_TooShort() {
+        assertThrows(RuntimeException.class, () -> {
+            deliveryArea.validatePostcode("N37 A02");  // Incorrect length
+        });
+    }
+
+    @Test
+    public void testInvalidPostcode_WrongFormat() {
+        assertThrows(RuntimeException.class, () -> {
+            deliveryArea.validatePostcode("37N AO24");  // Incorrect format
+        });
+    }
+
+    @Test
+    public void testInvalidPostcode_SpecialCharacters() {
+        assertThrows(RuntimeException.class, () -> {
+            deliveryArea.validatePostcode("N37@AO24");  // Special characters in postcode
+        });
+    }
+
+    // areas overlapping tests 
+    @Test
+    public void testNonOverlappingArea() {
+        assertTrue(deliveryArea.verifyAreaDoesNotOverlap("Area1", "Area2"));  // Non-overlapping areas
+    }
+
+    @Test
+    public void testOverlappingArea() {
+        assertThrows(RuntimeException.class, () -> {
+            deliveryArea.verifyAreaDoesNotOverlap("Area1", "Area1");  // Overlapping areas
+        });
+    }
+
+    // area name tests
+    @Test
+    public void testValidAreaName() {
+        assertTrue(deliveryArea.validateAreaName("North Region"));  // Valid Area Name
+    }
+
+    @Test
+    public void testInvalidAreaName_TooLong() {
+        assertThrows(RuntimeException.class, () -> {
+            deliveryArea.validateAreaName("ThisAreaNameIsWayTooLongToBeValidForOurApplication");  // More than 50 chars
+        });
+    }
+
+    @Test
+    public void testInvalidAreaName_Empty() {
+        assertThrows(RuntimeException.class, () -> {
+            deliveryArea.validateAreaName("");  // Empty area name
+        });
+    }
+
+    // verify area is shown/displayed
+    @Test
+    public void testAreaShownOnScreen_Success() {
+        assertTrue(deliveryArea.verifyAreaShownOnScreen("North Region"));  // Successfully shown on screen
+    }
+
+    @Test
+    public void testAreaNotShownOnScreen() {
+        assertThrows(RuntimeException.class, () -> {
+            deliveryArea.verifyAreaShownOnScreen(null);  // Area not displayed
+        });
+    }
+
+    // special characters in Area Name
+    @Test
+    public void testInvalidAreaName_SpecialCharacters() {
+        assertThrows(RuntimeException.class, () -> {
+            deliveryArea.validateAreaName("North@Region");  
+        });
+    }
+
+    // validate that Area IDs are unique
+    @Test
+    public void testInvalidDeliveryAreaID_Duplicate() {
+        assertThrows(RuntimeException.class, () -> {
+            deliveryArea.validateDeliveryAreaID(1001);  // Assuming Area ID already exists
+        });
+    }
+}
