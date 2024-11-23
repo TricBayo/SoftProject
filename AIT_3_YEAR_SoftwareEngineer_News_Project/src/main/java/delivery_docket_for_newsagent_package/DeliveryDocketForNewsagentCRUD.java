@@ -3,13 +3,11 @@ package delivery_docket_for_newsagent_package;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 
 import for_all_entities_package.EntitiesMySQLAccess;
 
 public class DeliveryDocketForNewsagentCRUD {
 
-	private Statement statement = null;
 	private PreparedStatement preparedStatement = null;
 	private ResultSet resultSet = null;
 
@@ -34,11 +32,11 @@ public class DeliveryDocketForNewsagentCRUD {
 			// Create prepared statement to issue SQL query to the database
 			preparedStatement = connection.prepareStatement("INSERT INTO Software_Project_NewsCompany.delivery_docket VALUES (default, ?, ?, ?, ?, ?)");
 
-			preparedStatement.setString(1, dD.getCustomerName());
-			preparedStatement.setString(2, dD.getDeliveryPersonName());
-			preparedStatement.setString(3, dD.getOrderDate());
-			preparedStatement.setString(4, dD.getPostcode());
-			preparedStatement.setInt(5, dD.getTrackNumber());
+			preparedStatement.setString(1, dD.getOrderDate());
+			preparedStatement.setInt(2, dD.getTrackNumber());
+			preparedStatement.setInt(3, dD.getDeliveryStatus());
+			preparedStatement.setInt(4, dD.getCustomerId());
+			preparedStatement.setInt(5, dD.getDeliveryPersonId());
 
 			preparedStatement.executeUpdate();
 
@@ -51,27 +49,76 @@ public class DeliveryDocketForNewsagentCRUD {
 		return insertSuccessful;
 	}
 
-	// ----------------------------- Read --------------------------- //
+	// ------------------------------ Read by ID ----------------------------- //
+	public ResultSet readDeliveryDocketById(int id) {
+
+		try {
+			// Get the connection from MySQLAccess
+			Connection connection = deliveryDocketAccess.getConnection();
+
+			String query = """
+					SELECT  dd.order_date,
+							dd.track_number,
+							dp.dperson_name,
+						    cp.customer_name,
+					        cp.postcode,
+							dd.delivery_status
+					FROM Software_Project_NewsCompany.delivery_docket dd
+					JOIN Software_Project_NewsCompany.customer_profile cp ON dd.customer_id = cp.id
+					JOIN Software_Project_NewsCompany.delivery_person dp ON dd.dperson_id = dp.id
+					WHERE dd.id = ?
+					""";
+
+			// Create prepared statement
+			preparedStatement = connection.prepareStatement(query);
+
+			// Set the delivery_docket ID parameter
+			preparedStatement.setInt(1, id);
+
+			// Execute the query
+			resultSet = preparedStatement.executeQuery();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			resultSet = null;
+		}
+
+		return resultSet;
+	}
+
+	// ----------------------------- Read All --------------------------- //
 	public ResultSet readAllDeliveryDocket() {
 
 		try {
 			// Get the connection from MySQLAccess
 			Connection connection = deliveryDocketAccess.getConnection();
 
-			// Create a statement to issue the SQL query to the database
-			statement = connection.createStatement();
-			resultSet = statement.executeQuery("SELECT * FROM Software_Project_NewsCompany.delivery_docket");
+			String query = """
+					SELECT  dd.order_date,
+							dd.track_number,
+							dp.dperson_name,
+						    cp.customer_name,
+					        cp.postcode,
+							dd.delivery_status
+					FROM Software_Project_NewsCompany.delivery_docket dd
+					JOIN Software_Project_NewsCompany.customer_profile cp ON dd.customer_id = cp.id
+					JOIN Software_Project_NewsCompany.delivery_person dp ON dd.dperson_id = dp.id
+					""";
+			// Create prepared statement
+			preparedStatement = connection.prepareStatement(query);
+
+			// Execute the query
+			resultSet = preparedStatement.executeQuery();
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			resultSet = null;
-
 		}
 
 		return resultSet;
 	}
 
-	// ---------------------------- Update ------------------------- //
+	// ---------------------------- Update by ID ------------------------- //
 	public boolean updateDeliveryDocketById(int id, DeliveryDocket updateDd) {
 
 		boolean updateSuccessful = true;
@@ -80,23 +127,32 @@ public class DeliveryDocketForNewsagentCRUD {
 			// Get the connection from MySQLAccess
 			Connection connection = deliveryDocketAccess.getConnection();
 
-			// Create prepared statement to issue SQL query to the database
-			preparedStatement = connection.prepareStatement("UPDATE Software_Project_NewsCompany.delivery_docket SET customerName=?, deliveryPersonName=?, orderDate=?, postcode=?, trackNumber=? WHERE id=?");
+			String query = """
+					UPDATE Software_Project_NewsCompany.delivery_docket
+					SET track_number = ?, order_date = ?, customer_id = ?, dperson_id = ?
+					WHERE id = ?
+					""";
 
-			preparedStatement.setString(1, updateDd.getCustomerName());
-			preparedStatement.setString(2, updateDd.getDeliveryPersonName());
-			preparedStatement.setString(3, updateDd.getOrderDate());
-			preparedStatement.setString(4, updateDd.getPostcode());
-			preparedStatement.setInt(5, updateDd.getTrackNumber());
+			// Create prepared statement
+			preparedStatement = connection.prepareStatement(query);
 
-			preparedStatement.setInt(6, id);
+			preparedStatement.setInt(1, updateDd.getTrackNumber());
+			preparedStatement.setString(2, updateDd.getOrderDate());
+			preparedStatement.setInt(3, updateDd.getCustomerId());
+			preparedStatement.setInt(4, updateDd.getDeliveryPersonId());
+			preparedStatement.setInt(5, id);
 
-			preparedStatement.executeUpdate();
+			// Execute the update
+			int rowsAffected = preparedStatement.executeUpdate();
+
+			// Check if the update was successful
+			if (rowsAffected == 0) {
+				updateSuccessful = false;
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			updateSuccessful = false;
-
 		}
 
 		return updateSuccessful;

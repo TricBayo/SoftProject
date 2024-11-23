@@ -11,7 +11,7 @@ public class DeliveryPersonAttributesTests {
 
 	DeliveryPerson deliveryPerson = new DeliveryPerson();
 
-	// name
+	// delivery person name
 	@Test
 	public void testValidName() throws EntitiesExceptionHandler {
 		assertTrue(deliveryPerson.validateName("John Doe")); // Valid name
@@ -31,7 +31,7 @@ public class DeliveryPersonAttributesTests {
 		});
 	}
 
-	// postcode
+	// delivery person postcode address
 	@Test
 	public void testValidPostcode() throws EntitiesExceptionHandler {
 		assertTrue(deliveryPerson.validatePostcode("N37AO24")); // Valid postcode
@@ -51,10 +51,15 @@ public class DeliveryPersonAttributesTests {
 		});
 	}
 
-	// phone number
+	// delivery person phone number
 	@Test
-	public void testValidPhoneNumber() throws EntitiesExceptionHandler {
+	public void testValidPhoneNumberWithSpaces() throws EntitiesExceptionHandler {
 		assertTrue(deliveryPerson.validatePhoneNumber("+353 01 123 4567")); // Valid phone number
+	}
+
+	@Test
+	public void testValidPhoneNumberWithoutSpaces() throws EntitiesExceptionHandler {
+		assertTrue(deliveryPerson.validatePhoneNumber("+353011234567")); // Valid phone number
 	}
 
 	@Test
@@ -64,14 +69,7 @@ public class DeliveryPersonAttributesTests {
 		});
 	}
 
-	@Test
-	public void testInvalidPhoneNumber_WrongFormat() {
-		assertThrows(EntitiesExceptionHandler.class, () -> {
-			deliveryPerson.validatePhoneNumber("+353011234567"); // Incorrect format
-		});
-	}
-
-	// area id
+	// delivery area id
 	@Test
 	public void testValidAreaId() throws EntitiesExceptionHandler {
 		assertTrue(deliveryPerson.validateAreaId("12")); // Valid Area Id
@@ -105,7 +103,7 @@ public class DeliveryPersonAttributesTests {
 		});
 	}
 
-	// password
+	// delivery person password
 	@Test
 	public void testValidPassword() throws EntitiesExceptionHandler {
 		assertTrue(deliveryPerson.validatePassword("Password1!")); // Valid password

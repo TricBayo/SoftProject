@@ -7,7 +7,7 @@ import for_all_entities_package.EntitiesExceptionHandler;
 
 public class NewsagentCredentials {
 
-	private String name;
+	private String newsagentName;
 	private String password;
 
 	// ----------------------- Constructors ------------------------ //
@@ -18,12 +18,12 @@ public class NewsagentCredentials {
 
 	}
 
-	public NewsagentCredentials(String name, String password) throws EntitiesExceptionHandler {
+	public NewsagentCredentials(String newsagentName, String password) throws EntitiesExceptionHandler {
 
 		// Validate Input
 		try {
 
-			validateNewsagentName(name);
+			validateName(newsagentName);
 			validateNewsagentPassword(password);
 
 		} catch (EntitiesExceptionHandler e) {
@@ -31,21 +31,21 @@ public class NewsagentCredentials {
 			throw e;
 		}
 
-		this.name = name;
+		this.newsagentName = newsagentName;
 		this.password = password;
 	}
 
 	// ----------------------- Getter and Setters ------------------------ //
 
-	public String getName() {
+	public String getNewsagentName() {
 
-		return name;
+		return newsagentName;
 	}
 
-	public void setName(String name) throws EntitiesExceptionHandler {
+	public void setNewsagentName(String newsagentName) throws EntitiesExceptionHandler {
 
-		validateNewsagentName(name);
-		this.name = name;
+		validateName(newsagentName);
+		this.newsagentName = newsagentName;
 	}
 
 	public String getPassword() {
@@ -61,20 +61,20 @@ public class NewsagentCredentials {
 
 	// ----------------- Attributes Validating Methods ----------------- //
 
-	public boolean validateNewsagentName(String name) throws EntitiesExceptionHandler {
+	public boolean validateName(String newsagentName) throws EntitiesExceptionHandler {
 
 		boolean result = false;
 
-		if (name == null || name.isBlank()) {
+		if (newsagentName == null || newsagentName.isBlank()) {
 			throw new EntitiesExceptionHandler("Newsagent Name NOT specified");
 
-		} else if (name.length() < 2) {
+		} else if (newsagentName.length() < 2) {
 			throw new EntitiesExceptionHandler("Newsagent Name does not meet minimum length requirements");
 
-		} else if (name.length() > 50) {
+		} else if (newsagentName.length() > 50) {
 			throw new EntitiesExceptionHandler("Newsagent Name exceeds maximum length requirements");
 
-		} else if (!name.matches("[a-zA-Z ]+")) { // Only allows letters and spaces
+		} else if (!newsagentName.matches("[a-zA-Z ]+")) { // Only allows letters and spaces
 			throw new EntitiesExceptionHandler("Newsagent Name contains invalid characters");
 
 		} else {

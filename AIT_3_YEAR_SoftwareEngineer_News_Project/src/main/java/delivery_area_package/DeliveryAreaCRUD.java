@@ -78,7 +78,7 @@ public class DeliveryAreaCRUD {
 			Connection connection = deliveryAreaAccess.getConnection();
 
 			// Create prepared statement to issue SQL query to the database
-			preparedStatement = connection.prepareStatement("UPDATE Software_Project_NewsCompany.delivery_area SET name=?, postcode=? WHERE id=?");
+			preparedStatement = connection.prepareStatement("UPDATE Software_Project_NewsCompany.delivery_area SET area_name=?, area_postcode=? WHERE id=?");
 
 			preparedStatement.setString(1, updateDa.getName());
 			preparedStatement.setString(2, updateDa.getPostcode());

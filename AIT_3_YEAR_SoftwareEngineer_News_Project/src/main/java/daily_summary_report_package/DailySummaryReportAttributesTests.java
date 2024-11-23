@@ -11,33 +11,6 @@ public class DailySummaryReportAttributesTests {
 
 	DailySummaryReport summaryReport = new DailySummaryReport();
 
-	// stock amount
-	@Test
-	public void testValidStockAmount() throws EntitiesExceptionHandler {
-		assertTrue(summaryReport.validateStockAmount(50)); // Valid stock amount (positive number)
-	}
-
-	@Test
-	public void testInvalidStockAmount_Negative() {
-		assertThrows(EntitiesExceptionHandler.class, () -> {
-			summaryReport.validateStockAmount(-10); // Invalid: Negative stock amount
-		});
-	}
-
-	@Test
-	public void testInvalidStockAmount_LessThanFour() {
-		assertThrows(EntitiesExceptionHandler.class, () -> {
-			summaryReport.validateStockAmount(3); // Invalid: Stock is low, less than 4
-		});
-	}
-
-	@Test
-	public void testInvalidStockAmount_Zero() {
-		assertThrows(EntitiesExceptionHandler.class, () -> {
-			summaryReport.validateStockAmount(0); // Invalid: Stock is zero
-		});
-	}
-
 	// report date
 	@Test
 	public void testValidReportDate() throws EntitiesExceptionHandler {
@@ -69,6 +42,46 @@ public class DailySummaryReportAttributesTests {
 	public void testInvalidReportDate_ContainsLetters() {
 		assertThrows(EntitiesExceptionHandler.class, () -> {
 			summaryReport.validateDate("25/Dec/2025"); // Invalid: Date contains letters
+		});
+	}
+
+	// customerId tests
+	@Test
+	public void testValidCustomerId() throws EntitiesExceptionHandler {
+		assertTrue(summaryReport.validateCustomerId(127)); // Valid customerId
+	}
+
+	@Test
+	public void testInvalidCustomerId_Negative() {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			summaryReport.validateCustomerId(-1); // Negative customerId
+		});
+	}
+
+	@Test
+	public void testInvalidCustomerId_Zero() {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			summaryReport.validateCustomerId(0); // Zero customerId (invalid)
+		});
+	}
+
+	// publicationId tests
+	@Test
+	public void testValidPublicationId() throws EntitiesExceptionHandler {
+		assertTrue(summaryReport.validatePublicationId(457)); // Valid publicationId
+	}
+
+	@Test
+	public void testInvalidPublicationId_Negative() {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			summaryReport.validatePublicationId(-10); // Negative publicationId
+		});
+	}
+
+	@Test
+	public void testInvalidPublicationId_Zero() {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			summaryReport.validatePublicationId(0); // Zero publicationId (invalid)
 		});
 	}
 

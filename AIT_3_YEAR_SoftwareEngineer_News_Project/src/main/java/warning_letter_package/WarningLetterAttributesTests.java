@@ -11,68 +11,50 @@ public class WarningLetterAttributesTests {
 
 	WarningLetter warningLetter = new WarningLetter();
 
-	// amount in debt
+	// customerId tests
 	@Test
-	public void testValidAmountInDebt() throws EntitiesExceptionHandler {
-		assertTrue(warningLetter.validateAmountInDebt(100.50)); // Valid amount in debt (double)
+	public void testValidCustomerId() throws EntitiesExceptionHandler {
+		assertTrue(warningLetter.validateCustomerId(123)); // Valid customerId
 	}
 
 	@Test
-	public void testInvalidAmountInDebt_Negative() {
+	public void testInvalidCustomerId_Negative() {
 		assertThrows(EntitiesExceptionHandler.class, () -> {
-			warningLetter.validateAmountInDebt(-10.00); // Invalid: Negative amount in debt
-		});
-	}
-
-	// customer name
-	@Test
-	public void testValidName() throws EntitiesExceptionHandler {
-		assertTrue(warningLetter.validateName("John Doe")); // Valid name (3 to 20 characters)
-	}
-
-	@Test
-	public void testInvalidName_TooShort() {
-		assertThrows(EntitiesExceptionHandler.class, () -> {
-			warningLetter.validateName("J"); // Invalid: Too short
+			warningLetter.validateCustomerId(-1); // Negative customerId
 		});
 	}
 
 	@Test
-	public void testInvalidName_TooLong() {
+	public void testInvalidCustomerId_Zero() {
 		assertThrows(EntitiesExceptionHandler.class, () -> {
-			warningLetter.validateName("ThisNameIsWayTooLongToBeValidForACustomerProfileThisNameIsWayTooLongToBeValidForACustomerProfile"); // Invalid: Too long
+			warningLetter.validateCustomerId(0); // Zero customerId (invalid)
 		});
 	}
 
-	// postcode
+	// delivery area id
 	@Test
-	public void testValidPostcode() throws EntitiesExceptionHandler {
-		assertTrue(warningLetter.validatePostcode("N37AO24")); // Valid postcode format
+	public void testValidAreaId() throws EntitiesExceptionHandler {
+		assertTrue(warningLetter.validateAreaId(12)); // Valid Area Id
 	}
 
 	@Test
-	public void testInvalidPostcode_WrongFormat() {
+	public void testInvalidAreaIdZero() {
 		assertThrows(EntitiesExceptionHandler.class, () -> {
-			warningLetter.validatePostcode("N3724AO"); // Invalid: Wrong format
+			warningLetter.validateAreaId(0); // Area Id is zero
 		});
 	}
 
-	// monthly payment status
 	@Test
-	public void testValidMonthlyPaymentStatusLessThanThree() throws EntitiesExceptionHandler {
-		assertTrue(warningLetter.validatePaymentStatus(2)); // Valid payment status (less than 3 months delayed)
-	}
-
-	@Test
-	public void testValidMonthlyPaymentStatusGreaterEqualThree() throws EntitiesExceptionHandler {
-		assertTrue(warningLetter.validatePaymentStatus(3)); // Valid payment status (greater or equal 3 months delayed)
-
-	}
-
-	@Test
-	public void testValidMonthlyPaymentStatusLessThanZero() {
+	public void testInvalidAreaIdLessThanZero() {
 		assertThrows(EntitiesExceptionHandler.class, () -> {
-			warningLetter.validatePaymentStatus(-1); // Invalid Payment Status (less than zero)
+			warningLetter.validateAreaId(-1); // Area Id less than zero
+		});
+	}
+
+	@Test
+	public void testInvalidAreaIdGreaterThan24() {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			warningLetter.validateAreaId(25); // Area Id greater than 24
 		});
 	}
 

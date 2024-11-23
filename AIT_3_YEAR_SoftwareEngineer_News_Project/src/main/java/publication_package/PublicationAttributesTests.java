@@ -1,6 +1,5 @@
 package publication_package;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -68,48 +67,39 @@ public class PublicationAttributesTests {
 	// stock balance
 	@Test
 	public void testValidStockBalance() throws EntitiesExceptionHandler {
-		assertTrue(publication.validateStockBalance(50)); // Valid stock balance (>= 0)
+		assertTrue(publication.validateStockAmount(50)); // Valid stock > 0, Do not need to be Increased yet
+	}
+
+	@Test
+	public void testValidLowStockNeedToBeIncreasedBoundary() throws EntitiesExceptionHandler {
+		assertTrue(publication.validateStockAmount(3)); // Valid: Stock, Needs to be Increased
+
+	}
+
+	@Test
+	public void testValidLowStockNeedToBeIncreased() throws EntitiesExceptionHandler {
+		assertTrue(publication.validateStockAmount(2)); // Valid: Stock, Needs to be Increased
+
 	}
 
 	@Test
 	public void testInvalidStockBalance_Negative() {
 		assertThrows(EntitiesExceptionHandler.class, () -> {
-			publication.validateStockBalance(-1); // Invalid: Negative stock balance
+			publication.validateStockAmount(-1); // Invalid: Negative stock balance
 		});
-	}
-
-	@Test
-	public void testIncrementValidStock() throws EntitiesExceptionHandler {
-		assertTrue(publication.validateStockBalance(3)); // Valid: Stock incremented by 1
-
-	}
-
-	@Test
-	public void testDecrementValidStock() throws EntitiesExceptionHandler {
-		assertTrue(publication.validateStockBalance(50)); // Valid: Stock decremented by 1
-
-	}
-
-	@Test
-	public void testInvalidStockBalance_ShowsErrorMessage() {
-		EntitiesExceptionHandler exception = assertThrows(EntitiesExceptionHandler.class, () -> {
-			publication.validateStockBalance(-5); // Invalid stock balance
-		});
-		assertEquals("Publication Stock must be a non-negative integer", exception.getMessage()); // Validate the correct error message
 	}
 
 	// publication price
 	@Test
 	public void testValidPublicationPrice() throws EntitiesExceptionHandler {
-		assertTrue(publication.validatePublicationPrice(12.25)); // Valid customer name (matches profile)
-
+		assertTrue(publication.validateEditionPrice(12.25)); // Valid double Positive Price
 	}
 
 	@Test
 	public void invalidPublicationPrice() {
 
 		assertThrows(EntitiesExceptionHandler.class, () -> {
-			publication.validatePublicationPrice(-12.0); // Name too short
+			publication.validateEditionPrice(-12.0); // Invalid double Negative Price
 
 		});
 
