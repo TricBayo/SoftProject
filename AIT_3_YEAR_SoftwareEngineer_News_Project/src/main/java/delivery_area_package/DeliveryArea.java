@@ -28,6 +28,8 @@ public class DeliveryArea {
 
 		} catch (EntitiesExceptionHandler e) {
 
+			e.printStackTrace();
+
 			throw e;
 		}
 
@@ -83,23 +85,25 @@ public class DeliveryArea {
 	}
 
 	public boolean validatePostcode(String postCode) throws EntitiesExceptionHandler {
-
 		boolean result = false;
 
-		// Regex for the format: one letter, two digits, two letters, two digits
-		String postCodeRegex = "^[A-Z]{1}\\d{2}[A-Z]{2}\\d{2}$";
+		// Regex Pattern
+		String postCodeRegex = "^[A-Za-z]{1}\\d{2}[A-Za-z]{2}\\d{2}$";
 		Pattern pattern = Pattern.compile(postCodeRegex);
-		Matcher matcher = pattern.matcher(postCode);
 
+		// Validate if the input is null or empty
 		if (postCode == null || postCode.isBlank()) {
 			throw new EntitiesExceptionHandler("Postcode NOT specified");
+		}
 
-		} else if (postCode.contains(" ")) {
-			throw new EntitiesExceptionHandler("Postcode must not contain spaces");
+		// Remove any spaces from the input
+		postCode = postCode.replaceAll("\\s", "");
 
-		} else if (!matcher.matches()) {
+		// Match against the regex
+		Matcher matcher = pattern.matcher(postCode);
+
+		if (!matcher.matches()) {
 			throw new EntitiesExceptionHandler("Postcode format NOT valid. Expected format: A11XX22");
-
 		} else {
 			result = true;
 		}

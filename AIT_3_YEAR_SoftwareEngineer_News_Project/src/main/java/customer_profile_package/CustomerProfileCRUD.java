@@ -43,8 +43,9 @@ public class CustomerProfileCRUD {
 			preparedStatement.executeUpdate();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+
 			insertSuccessful = false;
+			e.printStackTrace();
 
 		}
 
@@ -81,7 +82,7 @@ public class CustomerProfileCRUD {
 			Connection connection = customerAccess.getConnection();
 
 			// Create prepared statement to issue SQL query to the database
-			preparedStatement = connection.prepareStatement("UPDATE Software_Project_NewsCompany.customer_profile SET name=?, postcode=?, phoneNumber=?, email=?, paymentStatus=? WHERE id=?");
+			preparedStatement = connection.prepareStatement("UPDATE Software_Project_NewsCompany.customer_profile SET customer_name=?, postcode=?, phone_number=?, email=?, payment_status=? WHERE id=?");
 
 			preparedStatement.setString(1, updateC.getName());
 			preparedStatement.setString(2, updateC.getPostcode());

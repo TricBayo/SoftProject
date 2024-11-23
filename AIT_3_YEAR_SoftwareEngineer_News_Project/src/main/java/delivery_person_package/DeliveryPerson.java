@@ -126,27 +126,36 @@ public class DeliveryPerson {
 	}
 
 	public boolean validatePhoneNumber(String phoneNumber) throws EntitiesExceptionHandler {
-
 		boolean result = false;
 
-		// Regex to validate phone number format: +353 00 000 0000
-		String phoneRegex = "^\\+353 \\d{2} \\d{3} \\d{4}$";
+		// Regex Pattern to match international phone numbers with or without spaces
+		String phoneRegex = "^\\+\\d{1,3}(\\s?\\d{2,3})?(\\s?\\d{3})?(\\s?\\d{4})$";
 		Pattern pattern = Pattern.compile(phoneRegex);
-		Matcher matcher = pattern.matcher(phoneNumber);
 
 		if (phoneNumber == null || phoneNumber.isBlank()) {
-			throw new EntitiesExceptionHandler("Phone Number NOT specified");
-
-		} else if (!matcher.matches()) {
-			throw new EntitiesExceptionHandler("Phone Number format NOT valid. Expected format: +353 00 000 0000");
-
-		} else {
-			result = true;
-
+			throw new EntitiesExceptionHandler("Customer PhoneNumber NOT specified");
 		}
 
-		return result;
+		// Trim and normalize whitespace
+		String trimmedPhoneNumber = phoneNumber.trim();
+		String normalizedPhoneNumber = trimmedPhoneNumber.replaceAll("\\s+", "");
 
+		if (normalizedPhoneNumber.length() < 7) {
+			throw new EntitiesExceptionHandler("Customer PhoneNumber does not meet minimum length requirements");
+
+		} else if (normalizedPhoneNumber.length() > 20) {
+			throw new EntitiesExceptionHandler("Customer PhoneNumber exceeds maximum length requirements");
+		}
+
+		Matcher matcher = pattern.matcher(trimmedPhoneNumber);
+
+		if (!matcher.matches()) {
+			throw new EntitiesExceptionHandler("Customer PhoneNumber format NOT valid. Expected formats: +XXX XX XXX XXXX or +XXXXXXXXXXXX");
+		}
+
+		result = true;
+
+		return result;
 	}
 
 	public boolean validateAreaId(String areaId) throws EntitiesExceptionHandler {
@@ -156,45 +165,54 @@ public class DeliveryPerson {
 		// Check if the areaId is null or blank before parsing
 		if (areaId == null || areaId.isBlank()) {
 			throw new EntitiesExceptionHandler("Area Id Number NOT specified");
+
 		}
 
 		int areaIdNumber;
+
 		try {
 			areaIdNumber = Integer.parseInt(areaId);
+
 		} catch (NumberFormatException e) {
 			throw new EntitiesExceptionHandler("Area Id must be a valid number");
+
 		}
 
 		// Additional checks for areaIdNumber
 		if (areaIdNumber <= 0) {
 			throw new EntitiesExceptionHandler("Area Id must be greater than zero");
+
 		} else if (areaIdNumber > 24) {
 			throw new EntitiesExceptionHandler("Area Id must be less than or equal to 24");
+
 		} else {
 			result = true;
+
 		}
 
 		return result;
 	}
 
 	public boolean validatePostcode(String postCode) throws EntitiesExceptionHandler {
-
 		boolean result = false;
 
-		// Regex for the format: one letter, two digits, two letters, two digits
-		String postCodeRegex = "^[A-Z]{1}\\d{2}[A-Z]{2}\\d{2}$";
+		// Regex Pattern
+		String postCodeRegex = "^[A-Za-z]{1}\\d{2}[A-Za-z]{2}\\d{2}$";
 		Pattern pattern = Pattern.compile(postCodeRegex);
-		Matcher matcher = pattern.matcher(postCode);
 
+		// Validate if the input is null or empty
 		if (postCode == null || postCode.isBlank()) {
 			throw new EntitiesExceptionHandler("Postcode NOT specified");
+		}
 
-		} else if (postCode.contains(" ")) {
-			throw new EntitiesExceptionHandler("Postcode must not contain spaces");
+		// Remove any spaces from the input
+		postCode = postCode.replaceAll("\\s", "");
 
-		} else if (!matcher.matches()) {
+		// Match against the regex
+		Matcher matcher = pattern.matcher(postCode);
+
+		if (!matcher.matches()) {
 			throw new EntitiesExceptionHandler("Postcode format NOT valid. Expected format: A11XX22");
-
 		} else {
 			result = true;
 		}

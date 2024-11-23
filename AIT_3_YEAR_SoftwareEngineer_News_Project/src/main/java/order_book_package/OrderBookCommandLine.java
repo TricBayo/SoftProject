@@ -2,144 +2,152 @@ package order_book_package;
 
 import java.sql.ResultSet;
 import java.util.Scanner;
+
 import for_all_entities_package.CommandLinesExecution;
 
 public class OrderBookCommandLine implements CommandLinesExecution {
 
-    Scanner scanner = new Scanner(System.in);
+	Scanner scanner = new Scanner(System.in);
 
-    // Display Menu Options for OrderBook
-    private void orderBookFunctionalities() {
-        System.out.println();
-        System.out.println("=============================================");
-        System.out.println("Please, choose ONE of the following options:");
-        System.out.println("1. Create New Order Book");
-        System.out.println("2. Update Order Book by ID");
-        System.out.println("3. Read All Order Books");
-        System.out.println("4. Delete Order Book by ID");
-        System.out.println("5. Read Order Book by ID");
-        System.out.println("99. Return to Main Menu");
-        System.out.println("=============================================");
-        System.out.println();
-    }
+	// Display Menu Options for OrderBook
+	private void orderBookFunctionalities() {
+		System.out.println();
+		System.out.println("============= Order Book Menu ===============");
+		System.out.println("Please, choose one of the following options: |");
+		System.out.println("                                             |");
+		System.out.println("1. Create New Order Book                     |");
+		System.out.println("2. Read All Order Books                      |");
+		System.out.println("3. Read Order Book by ID                     |");
+		System.out.println("4. Update Order Book by ID                   |");
+		System.out.println("5. Delete Order Book by ID                   |");
+		System.out.println("99. Return to Main Menu                      |");
+		System.out.println("=============================================");
+		System.out.println();
+	}
 
-    @Override
-    public void execute() {
-        try {
-            OrderBookCRUD connect = new OrderBookCRUD();
-            String functionNumber;
-            boolean keepAppOpen = true;
+	@Override
+	public void execute() {
+		try {
+			OrderBookCRUD connect = new OrderBookCRUD();
+			String functionNumber;
+			boolean keepAppOpen = true;
 
-            while (keepAppOpen) {
-                orderBookFunctionalities();
-                functionNumber = scanner.next();
+			while (keepAppOpen) {
+				orderBookFunctionalities();
+				functionNumber = scanner.next();
 
-                switch (functionNumber) {
-                    case "1":
-                        // Create New Order Book
-                        System.out.print("Enter Order Book Name: ");
-                        String name = scanner.next();
+				switch (functionNumber) {
+				case "1":
 
-                        System.out.print("Enter Postcode: ");
-                        String postcode = scanner.next();
+					// Create New Order Book
+					System.out.print("Please, Enter CUSTOMER PROFILE ID to Create a New Order Book: ");
+					int customerId = scanner.nextInt();
 
-                        System.out.print("Enter Publication Name: ");
-                        String publicationName = scanner.next();
+					System.out.print("Please, Enter PUBLICATION ID to Create a New Order Book: ");
+					int publicationId = scanner.nextInt();
 
-                        OrderBook newOrderBook = new OrderBook(name, postcode, publicationName);
-                        boolean orderBookCreated = connect.createOrderBook(newOrderBook);
+					OrderBook newOrderBook = new OrderBook(customerId, publicationId);
 
-                        if (orderBookCreated) {
-                            System.out.println("New Order Book Created Successfully.");
-                        } else {
-                            System.out.println("ERROR: Failed to Create Order Book.");
-                        }
-                        break;
+					boolean orderBookCreated = connect.createOrderBook(newOrderBook);
 
-                    case "2":
-                        // Update Order Book by ID
-                        System.out.print("Enter Order Book ID to Update: ");
-                        int orderBookId = scanner.nextInt();
+					if (orderBookCreated) {
+						System.out.println("New Order Book Created Successfully.");
+					} else {
+						System.out.println("ERROR: Failed to Create Order Book.");
+					}
+					break;
 
-                        System.out.print("Enter New Order Book Name: ");
-                        String newName = scanner.next();
+				case "2":
+					// Read All Order Books
+					ResultSet resultSet = connect.readAllOrderBook();
 
-                        System.out.print("Enter New Postcode: ");
-                        String newPostcode = scanner.next();
+					if (resultSet != null) {
 
-                        System.out.print("Enter New Publication Name: ");
-                        String newPublicationName = scanner.next();
+						while (resultSet.next()) {
 
-                        OrderBook updatedOrderBook = new OrderBook(newName, newPostcode, newPublicationName);
-                        boolean orderBookUpdated = connect.updateOrderBookById(orderBookId, updatedOrderBook);
+							System.out.println("-------------------------");
+							System.out.println("Name: " + resultSet.getString("customer_name"));
+							System.out.println("Postcode: " + resultSet.getString("postcode"));
+							System.out.println("Publication Name: " + resultSet.getString("publication_name"));
+							System.out.println("-------------------------");
+						}
+					} else {
+						System.out.println("No order books found.");
 
-                        if (orderBookUpdated) {
-                            System.out.println("Order Book Updated Successfully.");
-                        } else {
-                            System.out.println("ERROR: Failed to Update Order Book.");
-                        }
-                        break;
+					}
+					break;
 
-                    case "3":
-                        // Read All Order Books
-                        ResultSet resultSet = connect.readAllOrderBook();
-                        if (resultSet != null) {
-                            while (resultSet.next()) {
-                                System.out.println("ID: " + resultSet.getInt("id"));
-                                System.out.println("Name: " + resultSet.getString("name"));
-                                System.out.println("Postcode: " + resultSet.getString("postcode"));
-                                System.out.println("Publication Name: " + resultSet.getString("publicationName"));
-                                System.out.println("------------------------------------");
-                            }
-                        } else {
-                            System.out.println("No order books found.");
-                        }
-                        break;
+				case "3":
+					// Read Order Book by ID
+					System.out.print("Enter Order Book ID to Read: ");
+					int readOrderBookId = scanner.nextInt();
 
-                    case "4":
-                        // Delete Order Book by ID
-                        System.out.print("Enter Order Book ID to Delete: ");
-                        int deleteOrderBookId = scanner.nextInt();
+					ResultSet readResultSet = connect.readOrderBookById(readOrderBookId);
 
-                        boolean orderBookDeleted = connect.deleteOrderBookById(deleteOrderBookId);
+					if (readResultSet != null && readResultSet.next()) {
 
-                        if (orderBookDeleted) {
-                            System.out.println("Order Book Deleted Successfully.");
-                        } else {
-                            System.out.println("ERROR: Failed to Delete Order Book.");
-                        }
-                        break;
+						System.out.println("Name: " + readResultSet.getString("customer_name"));
+						System.out.println("Postcode: " + readResultSet.getString("postcode"));
+						System.out.println("Publication Name: " + readResultSet.getString("publication_name"));
 
-                    case "5":
-                        // Read Order Book by ID
-                        System.out.print("Enter Order Book ID to Read: ");
-                        int readOrderBookId = scanner.nextInt();
+					} else {
+						System.out.println("Order Book with ID " + readOrderBookId + " not found.");
 
-                        ResultSet readResultSet = connect.readOrderBookById(readOrderBookId);
-                        if (readResultSet != null && readResultSet.next()) {
-                            System.out.println("ID: " + readResultSet.getInt("id"));
-                            System.out.println("Name: " + readResultSet.getString("name"));
-                            System.out.println("Postcode: " + readResultSet.getString("postcode"));
-                            System.out.println("Publication Name: " + readResultSet.getString("publicationName"));
-                        } else {
-                            System.out.println("Order Book with ID " + readOrderBookId + " not found.");
-                        }
-                        break;
+					}
 
-                    case "99":
-                        // Return to Main Menu
-                        keepAppOpen = false;
-                        System.out.println("Returning to Main Menu...");
-                        break;
+					break;
 
-                    default:
-                        System.out.println("No Valid Function Selected");
-                        break;
-                }
-            }
+				case "4":
 
-        } catch (Exception e) {
-            System.out.println("PROGRAM TERMINATED - ERROR MESSAGE: " + e.getMessage());
-        }
-    }
+					// Update New Order Book
+					System.out.print("Enter Report ID to Update: ");
+					int updateId = scanner.nextInt();
+
+					System.out.print("Please, Enter new CUSTOMER PROFILE ID: ");
+					int customerIdUp = scanner.nextInt();
+
+					System.out.print("Please, Enter new PUBLICATION ID: ");
+					int publicationIdUp = scanner.nextInt();
+
+					OrderBook newOrderBookUp = new OrderBook(customerIdUp, publicationIdUp);
+
+					boolean orderBookCreatedUp = connect.updateOrderBookById(updateId, newOrderBookUp);
+
+					if (orderBookCreatedUp) {
+						System.out.println("Order Book Updated Successfully.");
+					} else {
+						System.out.println("ERROR: Failed to Update Order Book.");
+					}
+					break;
+
+				case "5":
+					// Delete Order Book by ID
+					System.out.print("Enter Order Book ID to Delete: ");
+					int deleteOrderBookId = scanner.nextInt();
+
+					boolean orderBookDeleted = connect.deleteOrderBookById(deleteOrderBookId);
+
+					if (orderBookDeleted) {
+						System.out.println("Order Book Deleted Successfully.");
+					} else {
+						System.out.println("ERROR: Failed to Delete Order Book.");
+					}
+					break;
+
+				case "99":
+					// Return to Main Menu
+					keepAppOpen = false;
+					System.out.println("Returning to Main Menu...");
+					break;
+
+				default:
+					System.out.println("No Valid Function Selected");
+					break;
+				}
+			}
+
+		} catch (Exception e) {
+			System.out.println("PROGRAM TERMINATED - ERROR MESSAGE: " + e.getMessage());
+		}
+	}
 }
