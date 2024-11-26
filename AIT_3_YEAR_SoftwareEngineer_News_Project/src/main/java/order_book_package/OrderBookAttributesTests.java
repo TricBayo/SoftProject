@@ -11,90 +11,44 @@ public class OrderBookAttributesTests {
 
 	OrderBook orderBook = new OrderBook();
 
-	// customer name
+	// customerId tests
 	@Test
-	public void testValidCustomerName() throws EntitiesExceptionHandler {
-		assertTrue(orderBook.validateCustomerName("John Doe")); // Valid customer name (matches profile)
+	public void testValidCustomerId() throws EntitiesExceptionHandler {
+		assertTrue(orderBook.validateCustomerId(123)); // Valid customerId
 	}
 
 	@Test
-	public void testInvalidCustomerName_TooShort() {
+	public void testInvalidCustomerId_Negative() {
 		assertThrows(EntitiesExceptionHandler.class, () -> {
-			orderBook.validateCustomerName("J"); // Name too short
+			orderBook.validateCustomerId(-1); // Negative customerId
 		});
 	}
 
 	@Test
-	public void testInvalidCustomerName_TooLong() {
+	public void testInvalidCustomerId_Zero() {
 		assertThrows(EntitiesExceptionHandler.class, () -> {
-			orderBook.validateCustomerName("ThisIsWayTooLongForAValidCustomerNameThisIsWayTooLongForAValidCustomerName"); // Name too long
+			orderBook.validateCustomerId(0); // Zero customerId (invalid)
 		});
 	}
 
-	// postcode
+	// publicationId tests
 	@Test
-	public void testValidPostcode() throws EntitiesExceptionHandler {
-		assertTrue(orderBook.validatePostcode("N37AO24")); // Valid postcode
+	public void testValidPublicationId() throws EntitiesExceptionHandler {
+		assertTrue(orderBook.validatePublicationId(456)); // Valid publicationId
 	}
 
 	@Test
-	public void testInvalidPostcode_WrongFormat() {
+	public void testInvalidPublicationId_Negative() {
 		assertThrows(EntitiesExceptionHandler.class, () -> {
-			orderBook.validatePostcode("AO24 N37"); // Incorrect format
-		});
-	}
-
-	// publication name
-	@Test
-	public void testValidPublicationName() throws EntitiesExceptionHandler {
-		assertTrue(orderBook.validatePublicationName("The Daily News")); // Valid publication name
-	}
-
-	@Test
-	public void testInvalidPublicationName_TooShort() {
-		assertThrows(EntitiesExceptionHandler.class, () -> {
-			orderBook.validatePublicationName("J"); // Name too short
+			orderBook.validatePublicationId(-10); // Negative publicationId
 		});
 	}
 
 	@Test
-	public void testInvalidPublicationName_TooLong() {
+	public void testInvalidPublicationId_Zero() {
 		assertThrows(EntitiesExceptionHandler.class, () -> {
-			orderBook.validatePublicationName("ThisPublicationNameIsWayTooLongToBeValidThisPublicationNameIsWayTooLongToBeValid"); // Name too long
+			orderBook.validatePublicationId(0); // Zero publicationId (invalid)
 		});
 	}
 
-	// extra tests
-
-	// special characters in Customer Name
-	@Test
-	public void testInvalidCustomerName_SpecialCharacters() {
-		assertThrows(EntitiesExceptionHandler.class, () -> {
-			orderBook.validateCustomerName("John@Doe");
-		});
-	}
-
-	// publication Name with special characters
-	@Test
-	public void testInvalidPublicationName_SpecialCharacters() {
-		assertThrows(EntitiesExceptionHandler.class, () -> {
-			orderBook.validatePublicationName("The Daily News@");
-		});
-	}
-
-	// empty Customer Name
-	@Test
-	public void testInvalidCustomerName_Empty() {
-		assertThrows(EntitiesExceptionHandler.class, () -> {
-			orderBook.validateCustomerName("");
-		});
-	}
-
-	// empty Publication Name
-	@Test
-	public void testInvalidPublicationName_Empty() {
-		assertThrows(EntitiesExceptionHandler.class, () -> {
-			orderBook.validatePublicationName("");
-		});
-	}
 }

@@ -17,50 +17,17 @@ public class MonthlyInvoiceAttributesTests {
 	// invoice amount
 	@Test
 	public void testValidInvoiceAmount() throws EntitiesExceptionHandler {
-		assertTrue(monthlyInvoice.validateInvoiceAmount("150.50")); // Valid double value
+		assertTrue(monthlyInvoice.validateInvoiceAmountToPay("150.50")); // Valid double value
 	}
 
 	@Test
 	public void testInvalidInvoiceAmount_Negative() {
 		assertThrows(EntitiesExceptionHandler.class, () -> {
-			monthlyInvoice.validateInvoiceAmount("-50.75"); // Invalid: Negative amount
+			monthlyInvoice.validateInvoiceAmountToPay("-50.75"); // Invalid: Negative amount
 		});
 	}
 
-	// name customer
-	@Test
-	public void testValidName() throws EntitiesExceptionHandler {
-		assertTrue(monthlyInvoice.validateName("John Doe")); // Valid customer name
-	}
-
-	@Test
-	public void testInvalidName_TooShort() {
-		assertThrows(EntitiesExceptionHandler.class, () -> {
-			monthlyInvoice.validateName("J"); // Name too short
-		});
-	}
-
-	@Test
-	public void testInvalidName_TooLong() {
-		assertThrows(EntitiesExceptionHandler.class, () -> {
-			monthlyInvoice.validateName("ThisNameIsWayTooLongForAValidNameThisNameIsWayTooLongForAValidName"); // Name too long
-		});
-	}
-
-	// postcode
-	@Test
-	public void testValidPostcode() throws EntitiesExceptionHandler {
-		assertTrue(monthlyInvoice.validatePostcode("N37AO24")); // Valid postcode
-	}
-
-	@Test
-	public void testInvalidPostcode_WrongFormat() {
-		assertThrows(EntitiesExceptionHandler.class, () -> {
-			monthlyInvoice.validatePostcode("AO24 N37"); // Incorrect format
-		});
-	}
-
-	// invoice deadline
+	// invoice payment date
 	@Test
 	public void testValidInvoiceDeadline() throws EntitiesExceptionHandler {
 		LocalDate invoiceDate = LocalDate.now();
@@ -78,9 +45,9 @@ public class MonthlyInvoiceAttributesTests {
 
 	// invoice amount with invalid data type
 	@Test
-	public void testInvalidInvoiceAmount_NotANumber() {
+	public void testInvalidInvoiceAmount_NotNumber() {
 		assertThrows(EntitiesExceptionHandler.class, () -> {
-			monthlyInvoice.validateInvoiceAmount("ABC"); // Invalid input: Not a number
+			monthlyInvoice.validateInvoiceAmountToPay("ABC"); // Invalid input: Not a number
 		});
 	}
 
@@ -89,6 +56,26 @@ public class MonthlyInvoiceAttributesTests {
 	public void testInvalidInvoiceDeadline_ContainsLetters() {
 		assertThrows(EntitiesExceptionHandler.class, () -> {
 			monthlyInvoice.validatePaymentDate("31/Oct/2024");
+		});
+	}
+
+	// customerId tests
+	@Test
+	public void testValidCustomerId() throws EntitiesExceptionHandler {
+		assertTrue(monthlyInvoice.validateCustomerId(127)); // Valid customerId
+	}
+
+	@Test
+	public void testInvalidCustomerId_Negative() {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			monthlyInvoice.validateCustomerId(-1); // Negative customerId
+		});
+	}
+
+	@Test
+	public void testInvalidCustomerId_Zero() {
+		assertThrows(EntitiesExceptionHandler.class, () -> {
+			monthlyInvoice.validateCustomerId(0); // Zero customerId (invalid)
 		});
 	}
 }

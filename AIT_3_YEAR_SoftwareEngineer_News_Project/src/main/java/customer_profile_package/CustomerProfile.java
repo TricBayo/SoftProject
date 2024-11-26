@@ -19,7 +19,7 @@ public class CustomerProfile {
 		// No-argument constructor
 	}
 
-	public CustomerProfile(String name, String postcode, String phoneNumber, String email, int paymentStatus) throws EntitiesExceptionHandler {
+	public CustomerProfile(String name, String phoneNumber, String postcode, String email, int paymentStatus) throws EntitiesExceptionHandler {
 
 		// Validate Input
 		try {
@@ -96,7 +96,7 @@ public class CustomerProfile {
 
 	public void setPaymentStatus(int paymentStatus) throws EntitiesExceptionHandler {
 
-		validatePaymentStatus(paymentStatus);
+		validatePaymentStatusWithoutDisplayMessage(paymentStatus);
 		this.paymentStatus = paymentStatus;
 	}
 
@@ -126,23 +126,25 @@ public class CustomerProfile {
 	}
 
 	public boolean validatePostcode(String postCode) throws EntitiesExceptionHandler {
-
 		boolean result = false;
 
-		// Regex for the format: one letter, two digits, two letters, two digits
-		String postCodeRegex = "^[A-Z]{1}\\d{2}[A-Z]{2}\\d{2}$";
+		// Regex Pattern
+		String postCodeRegex = "^[A-Za-z]{1}\\d{2}[A-Za-z]{2}\\d{2}$";
 		Pattern pattern = Pattern.compile(postCodeRegex);
-		Matcher matcher = pattern.matcher(postCode);
 
+		// Validate if the input is null or empty
 		if (postCode == null || postCode.isBlank()) {
 			throw new EntitiesExceptionHandler("Postcode NOT specified");
+		}
 
-		} else if (postCode.contains(" ")) {
-			throw new EntitiesExceptionHandler("Postcode must not contain spaces");
+		// Remove any spaces from the input
+		postCode = postCode.replaceAll("\\s", "");
 
-		} else if (!matcher.matches()) {
+		// Match against the regex
+		Matcher matcher = pattern.matcher(postCode);
+
+		if (!matcher.matches()) {
 			throw new EntitiesExceptionHandler("Postcode format NOT valid. Expected format: A11XX22");
-
 		} else {
 			result = true;
 		}
@@ -151,29 +153,34 @@ public class CustomerProfile {
 	}
 
 	public boolean validatePhoneNumber(String phoneNumber) throws EntitiesExceptionHandler {
-
 		boolean result = false;
 
-		// Regex pattern to match international phone numbers with or without spaces
-		String phoneRegex = "^\\+\\d{1,3}( ?\\d{2,3})?( ?\\d{3})?( ?\\d{4})$";
+		// Regex Pattern to match international phone numbers with or without spaces
+		String phoneRegex = "^\\+\\d{1,3}(\\s?\\d{2,3})?(\\s?\\d{3})?(\\s?\\d{4})$";
 		Pattern pattern = Pattern.compile(phoneRegex);
-		Matcher matcher = pattern.matcher(phoneNumber);
 
 		if (phoneNumber == null || phoneNumber.isBlank()) {
 			throw new EntitiesExceptionHandler("Customer PhoneNumber NOT specified");
+		}
 
-		} else if (phoneNumber.length() < 7) {
+		// Trim and normalize whitespace
+		String trimmedPhoneNumber = phoneNumber.trim();
+		String normalizedPhoneNumber = trimmedPhoneNumber.replaceAll("\\s+", "");
+
+		if (normalizedPhoneNumber.length() < 7) {
 			throw new EntitiesExceptionHandler("Customer PhoneNumber does not meet minimum length requirements");
 
-		} else if (phoneNumber.length() > 20) {
+		} else if (normalizedPhoneNumber.length() > 20) {
 			throw new EntitiesExceptionHandler("Customer PhoneNumber exceeds maximum length requirements");
-
-		} else if (!matcher.matches()) {
-			throw new EntitiesExceptionHandler("Customer PhoneNumber format NOT valid. Expected formats: +XXX XX XXX XXXX or +XXXXXXXXXXXX");
-
-		} else {
-			result = true;
 		}
+
+		Matcher matcher = pattern.matcher(trimmedPhoneNumber);
+
+		if (!matcher.matches()) {
+			throw new EntitiesExceptionHandler("Customer PhoneNumber format NOT valid. Expected formats: +XXX XX XXX XXXX or +XXXXXXXXXXXX");
+		}
+
+		result = true;
 
 		return result;
 	}
@@ -214,12 +221,43 @@ public class CustomerProfile {
 			throw new EntitiesExceptionHandler("Customer Payment Status NOT specified");
 
 		else if (paymentStatus < 0)
-			throw new EntitiesExceptionHandler("Customer Payment Status does not meet minimum length requirements");
-
-		else if (paymentStatus > 3)
-			throw new EntitiesExceptionHandler("Customer Payment Status indicates debt over three months");
+			throw new EntitiesExceptionHandler("Customer Payment Status cannot be less than zero");
 
 		else {
+
+			if (paymentStatus >= 0 && paymentStatus < 3) {
+				System.out.println();
+				System.out.println("Payment Status Level: Green => " + paymentStatus + " Months in Debt");
+				System.out.println("Warning Letter Debt Alert = 0.");
+
+			} else if (paymentStatus >= 3) {
+				System.out.println();
+				System.out.println("Payment Status Attention Level: RED => " + paymentStatus + " Months in Debt");
+				System.out.println("Warning Letter Debt = 1.");
+
+			}
+
+			result = true;
+		}
+
+		return result;
+
+	}
+
+	public boolean validatePaymentStatusWithoutDisplayMessage(int paymentStatusSet) throws EntitiesExceptionHandler {
+
+		boolean result = false;
+
+		String paymentStatusString = String.valueOf(paymentStatus);
+
+		if (paymentStatusString.isBlank() || paymentStatusString.isEmpty())
+			throw new EntitiesExceptionHandler("Customer Payment Status NOT specified");
+
+		else if (paymentStatus < 0)
+			throw new EntitiesExceptionHandler("Customer Payment Status cannot be less than zero");
+
+		else {
+
 			result = true;
 		}
 

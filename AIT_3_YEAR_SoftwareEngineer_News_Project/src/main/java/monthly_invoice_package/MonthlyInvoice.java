@@ -10,10 +10,10 @@ import for_all_entities_package.EntitiesExceptionHandler;
 
 public class MonthlyInvoice {
 
-	private String name;
-	private String postcode;
-	private String paymentDate;
 	private String amountToPay;
+	private String paymentDate;
+
+	private int customerId;
 
 	// ----------------------- Constructors ------------------------ //
 
@@ -23,49 +23,36 @@ public class MonthlyInvoice {
 
 	}
 
-	public MonthlyInvoice(String name, String postcode, String paymentDate, String amountToPay) throws EntitiesExceptionHandler {
+	public MonthlyInvoice(int customer_Id, String paymentDate, String amountToPay) throws EntitiesExceptionHandler {
 
 		// Validate Input
 		try {
 
-			validateName(name);
-			validatePostcode(postcode);
 			validatePaymentDate(paymentDate);
-			validateInvoiceAmount(amountToPay);
+			validateInvoiceAmountToPay(amountToPay);
+			validateCustomerId(customer_Id);
 
 		} catch (EntitiesExceptionHandler e) {
 
 			throw e;
 		}
 
-		this.name = name;
-		this.postcode = postcode;
 		this.paymentDate = paymentDate;
 		this.amountToPay = amountToPay;
+		this.customerId = customer_Id;
 	}
 
 	// ----------------------- Getter and Setters ------------------------ //
 
-	public String getName() {
+	public int getCustomerId() {
 
-		return name;
+		return customerId;
 	}
 
-	public void setName(String name) throws EntitiesExceptionHandler {
+	public void setCustomerId(int customerId) throws EntitiesExceptionHandler {
 
-		validateName(name);
-		this.name = name;
-	}
-
-	public String getPostcode() {
-
-		return postcode;
-	}
-
-	public void setPostcode(String postcode) throws EntitiesExceptionHandler {
-
-		validatePostcode(postcode);
-		this.postcode = postcode;
+		validateCustomerId(customerId);
+		this.customerId = customerId;
 	}
 
 	public String getPaymentDate() {
@@ -86,54 +73,20 @@ public class MonthlyInvoice {
 
 	public void setAmountToPay(String amountToPay) throws EntitiesExceptionHandler {
 
-		validateInvoiceAmount(amountToPay);
+		validateInvoiceAmountToPay(amountToPay);
 		this.amountToPay = amountToPay;
 	}
 
 	// ----------------- Attributes Validating Methods ----------------- //
-
-	public boolean validateName(String name) throws EntitiesExceptionHandler {
-
-		boolean result = false;
-
-		if (name == null || name.isBlank()) {
-			throw new EntitiesExceptionHandler("Customer Name NOT specified");
-
-		} else if (name.length() < 2) {
-			throw new EntitiesExceptionHandler("Customer Name does not meet minimum length requirements");
-
-		} else if (name.length() > 50) {
-			throw new EntitiesExceptionHandler("Customer Name exceeds maximum length requirements");
-
-		} else if (!name.matches("[a-zA-Z ]+")) { // Only allows letters and spaces
-			throw new EntitiesExceptionHandler("Customer Name contains invalid characters");
-
-		} else {
-			result = true;
-		}
-
-		return result;
-	}
-
-	public boolean validatePostcode(String postCode) throws EntitiesExceptionHandler {
+	public boolean validateCustomerId(int customerId) throws EntitiesExceptionHandler {
 
 		boolean result = false;
 
-		// Regex for the format: one letter, two digits, two letters, two digits
-		String postCodeRegex = "^[A-Z]{1}\\d{2}[A-Z]{2}\\d{2}$";
-		Pattern pattern = Pattern.compile(postCodeRegex);
-		Matcher matcher = pattern.matcher(postCode);
-
-		if (postCode == null || postCode.isBlank()) {
-			throw new EntitiesExceptionHandler("Postcode NOT specified");
-
-		} else if (postCode.contains(" ")) {
-			throw new EntitiesExceptionHandler("Postcode must not contain spaces");
-
-		} else if (!matcher.matches()) {
-			throw new EntitiesExceptionHandler("Postcode format NOT valid. Expected format: A11XX22");
+		if (customerId <= 0) {
+			throw new EntitiesExceptionHandler("Customer ID must be greater than 0");
 
 		} else {
+
 			result = true;
 		}
 
@@ -150,7 +103,7 @@ public class MonthlyInvoice {
 			throw new EntitiesExceptionHandler("Report Date NOT specified");
 
 		} else if (!matcher.matches()) {
-			throw new EntitiesExceptionHandler("Report Date format NOT valid. Expected format: DD/MM/YY");
+			throw new EntitiesExceptionHandler("Report Date format NOT valid. Expected format: DD/MM/YYYY");
 		}
 
 		// Further validate logical correctness of the date
@@ -167,7 +120,7 @@ public class MonthlyInvoice {
 		return true; // Return true if the date is valid
 	}
 
-	public boolean validateInvoiceAmount(String amountToPay) throws EntitiesExceptionHandler {
+	public boolean validateInvoiceAmountToPay(String amountToPay) throws EntitiesExceptionHandler {
 
 		boolean result = false;
 		double amount;

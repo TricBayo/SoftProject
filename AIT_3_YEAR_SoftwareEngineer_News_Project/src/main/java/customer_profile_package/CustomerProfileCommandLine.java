@@ -13,27 +13,29 @@ public class CustomerProfileCommandLine implements CommandLinesExecution {
 	private void customerProfileFunctionalities() {
 
 		System.out.println();
-		System.out.println("=============================================");
-		System.out.println("Please, choose ONE of the following options:");
-		System.out.println("1. Create Customer Account");
-		System.out.println("2. Read ALL Customer Records");
-		System.out.println("3. Update ALL Customer Records");
-		System.out.println("4. Delete Customer Record by ID");
-		System.out.println("99. Return to NewsAgent Menu");
-		System.out.println("=============================================");
+		System.out.println("======== CUSTOMER PROFILE ENTITY MENU ========");
+		System.out.println("Please, choose ONE of the following options:  |");
+		System.out.println("                                              |");
+		System.out.println("1. Create Customer Account                    |");
+		System.out.println("2. Read ALL Customer Records                  |");
+		System.out.println("3. Update Customer Record by ID               |");
+		System.out.println("4. Delete Customer Record by ID               |");
+		System.out.println("99. Return to NewsAgent Menu                  |");
+		System.out.println("==============================================");
 		System.out.println();
 
 	}
 
-	// Print The Contents of the Full Customer Table to News Agent Persona
 	private boolean printCustomerProfileTable(ResultSet rs) throws Exception {
 
-		System.out.println("------------------------------------------------------------------------------------------------------------------------------------");
-		System.out.println("Table: " + rs.getMetaData().getTableName(1));
+		System.out.println();
+		System.out.println("                 ---------------------------------------------------------------------------------------------------------");
+		System.out.println("                                                      Table: " + rs.getMetaData().getTableName(1) + " :");
+		System.out.println();
 
 		for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
 
-			System.out.printf("%30s", rs.getMetaData().getColumnName(i));
+			System.out.printf("%20s", rs.getMetaData().getColumnName(i));
 		}
 
 		System.out.println();
@@ -41,23 +43,25 @@ public class CustomerProfileCommandLine implements CommandLinesExecution {
 		while (rs.next()) {
 
 			int id = rs.getInt("id");
-			String name = rs.getString("name");
+			String name = rs.getString("customer_name");
 			String postcode = rs.getString("postcode");
-			String phoneNumber = rs.getString("phoneNumber");
+			String phoneNumber = rs.getString("phone_number");
 			String email = rs.getString("email");
-			int paymentStatus = rs.getInt("paymentStatus");
+			int paymentStatus = rs.getInt("payment_status");
 
-			System.out.printf("%30s", id);
-			System.out.printf("%30s", name);
-			System.out.printf("%30s", postcode);
-			System.out.printf("%30s", phoneNumber);
-			System.out.printf("%30s", email);
-			System.out.printf("%30s", paymentStatus);
+			System.out.printf("%20s", id);
+			System.out.printf("%20s", name);
+			System.out.printf("%20s", postcode);
+			System.out.printf("%20s", phoneNumber);
+			System.out.printf("%20s", email);
+			System.out.printf("%20s", paymentStatus);
+
 			System.out.println();
 
 		}
 
-		System.out.println("--------------------------------------------------------------------------------------------------------------------------------------");
+		System.out.println();
+		System.out.println("                 ---------------------------------------------------------------------------------------------------------");
 
 		return true;
 	}
@@ -83,22 +87,33 @@ public class CustomerProfileCommandLine implements CommandLinesExecution {
 				case "1":
 
 					// Create New Customer Profile
+					scanner.nextLine();
 					System.out.print("Enter Customer Name: ");
-					String name = scanner.next();
+					String name = scanner.nextLine();
 
 					System.out.print("Enter Customer Postcode: ");
-					String postcode = scanner.next();
+					String postcode = scanner.nextLine();
 
 					System.out.print("Enter Customer Phone Number: ");
-					String phoneNumber = scanner.next();
+					String phoneNumber = scanner.nextLine();
 
 					System.out.print("Enter Customer Email: ");
-					String email = scanner.next();
+					String email = scanner.nextLine();
 
-					System.out.print("Enter Customer Payment Status: ");
+					System.out.print("Enter Customer Debt Months: (0 to 2 = Green Alert | 3 or greater = Red Alert)");
 					int paymentStatus = scanner.nextInt();
+					scanner.nextLine();
 
 					CustomerProfile newCustomer = new CustomerProfile(name, phoneNumber, postcode, email, paymentStatus);
+
+					if (paymentStatus >= 3) {
+						newCustomer.setPaymentStatus(1);
+
+					} else {
+						newCustomer.setPaymentStatus(0);
+
+					}
+
 					boolean insertResult = connect.createCustomerDetailsAccount(newCustomer);
 
 					if (insertResult) {
@@ -140,31 +155,40 @@ public class CustomerProfileCommandLine implements CommandLinesExecution {
 					// Update Customer Profile by ID
 					System.out.print("Enter Customer Id to Update: ");
 					int id = scanner.nextInt();
+					scanner.nextLine();
 
 					System.out.print("Enter New Customer Name: ");
-					String newName = scanner.next();
+					String newName = scanner.nextLine();
 
 					System.out.print("Enter New Customer Postcode: ");
-					String newPostcode = scanner.next();
+					String newPostcode = scanner.nextLine();
 
 					System.out.print("Enter New Customer Phone Number: ");
-					String newPhoneNumber = scanner.next();
+					String newPhoneNumber = scanner.nextLine();
 
 					System.out.print("Enter New Customer Email: ");
-					String newEmail = scanner.next();
+					String newEmail = scanner.nextLine(); //
 
-					System.out.print("Enter New Customer Payment Status: ");
+					System.out.print("Enter New Customer Debt Months: (0 to 2 = Green Alert | 3 or greater = Red Alert): ");
 					int newPaymentStatus = scanner.nextInt();
+					scanner.nextLine();
 
 					CustomerProfile updateCustomer = new CustomerProfile(newName, newPhoneNumber, newPostcode, newEmail, newPaymentStatus);
+
+					if (newPaymentStatus >= 3) {
+						updateCustomer.setPaymentStatus(1);
+
+					} else {
+						updateCustomer.setPaymentStatus(0);
+
+					}
+
 					boolean updateResult = connect.updateCustomerById(id, updateCustomer);
 
 					if (updateResult) {
-
 						System.out.println("Customer Details Updated");
 
 					} else {
-
 						System.out.println("ERROR: Customer Details NOT Updated");
 
 					}

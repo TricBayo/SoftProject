@@ -14,20 +14,20 @@ public class NewsagentCredentialsAttributesTests {
 	// newsagent name
 	@Test
 	public void testValidNewsagentName() throws EntitiesExceptionHandler {
-		assertTrue(newsagent.validateNewsagentName("John Doe")); // Valid name
+		assertTrue(newsagent.validateName("John Doe")); // Valid name
 	}
 
 	@Test
 	public void testInvalidNewsagentName_TooShort() {
 		assertThrows(EntitiesExceptionHandler.class, () -> {
-			newsagent.validateNewsagentName("J"); // Name too short
+			newsagent.validateName("J"); // Name too short
 		});
 	}
 
 	@Test
 	public void testInvalidNewsagentName_TooLong() {
 		assertThrows(EntitiesExceptionHandler.class, () -> {
-			newsagent.validateNewsagentName("ThisNameIsWayTooLongToBeValidForNewsagentThisNameIsWayTooLongToBeValidForNewsagent"); // Name too long
+			newsagent.validateName("ThisNameIsWayTooLongToBeValidForNewsagentThisNameIsWayTooLongToBeValidForNewsagent"); // Name too long
 		});
 	}
 
@@ -64,7 +64,7 @@ public class NewsagentCredentialsAttributesTests {
 	@Test
 	public void testInvalidNewsagentName_ContainsNumbers() {
 		assertThrows(EntitiesExceptionHandler.class, () -> {
-			newsagent.validateNewsagentName("John123");
+			newsagent.validateName("John123");
 		});
 	}
 
@@ -72,7 +72,7 @@ public class NewsagentCredentialsAttributesTests {
 	@Test
 	public void testInvalidNewsagentName_ContainsSpecialCharacters() {
 		assertThrows(EntitiesExceptionHandler.class, () -> {
-			newsagent.validateNewsagentName("John@Doe");
+			newsagent.validateName("John@Doe");
 		});
 	}
 

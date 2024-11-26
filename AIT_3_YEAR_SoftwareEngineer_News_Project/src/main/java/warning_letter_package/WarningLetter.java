@@ -1,16 +1,11 @@
 package warning_letter_package;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import for_all_entities_package.EntitiesExceptionHandler;
 
 public class WarningLetter {
 
-	private String name;
-	private String postcode;
-	private double amountInDebt;
-	private int paymentStatus;
+	private int customerId;
+	private int deliveryAreaId;
 
 	// ----------------------- Constructors ------------------------ //
 
@@ -19,154 +14,92 @@ public class WarningLetter {
 		// No-argument constructor
 	}
 
-	public WarningLetter(String name, String postcode, double amountInDebt, int paymentStatus) throws EntitiesExceptionHandler {
+	public WarningLetter(int customerId, int deliveryAreaId) throws EntitiesExceptionHandler {
 
 		// Validate Input
 		try {
 
-			validateName(name);
-			validatePostcode(postcode);
-			validateAmountInDebt(amountInDebt);
-			validatePaymentStatus(paymentStatus);
+			validateCustomerId(customerId);
+			validateAreaId(deliveryAreaId);
 
 		} catch (EntitiesExceptionHandler e) {
 			throw e;
 
 		}
 
-		this.name = name;
-		this.postcode = postcode;
-		this.amountInDebt = amountInDebt;
-		this.paymentStatus = paymentStatus;
+		this.customerId = customerId;
+		this.deliveryAreaId = deliveryAreaId;
 	}
 
 	// ----------------------- Getter and Setters ------------------------ //
 
-	public String getName() {
-		return name;
-
+	public int getCustomerId() {
+		return customerId;
 	}
 
-	public void setName(String name) throws EntitiesExceptionHandler {
-		validateName(name);
-		this.name = name;
-
+	public void setCustomerId(int customerId) {
+		this.customerId = customerId;
 	}
 
-	public String getPostcode() {
-		return postcode;
-
+	public int getDeliveryAreaId() {
+		return deliveryAreaId;
 	}
 
-	public void setPostcode(String postcode) throws EntitiesExceptionHandler {
-		validatePostcode(postcode);
-		this.postcode = postcode;
-
-	}
-
-	public double getAmountInDebt() {
-		return amountInDebt;
-
-	}
-
-	public void setAmountInDebt(double amountInDebt) throws EntitiesExceptionHandler {
-		validateAmountInDebt(amountInDebt);
-		this.amountInDebt = amountInDebt;
-
-	}
-
-	public int getPaymentStatus() {
-		return paymentStatus;
-
-	}
-
-	public void setPaymentStatus(int paymentStatus) throws EntitiesExceptionHandler {
-		validatePaymentStatus(paymentStatus);
-		this.paymentStatus = paymentStatus;
-
+	public void setDeliveryAreaId(int deliveryAreaId) {
+		this.deliveryAreaId = deliveryAreaId;
 	}
 
 	// ----------------- Attributes Validating Methods ----------------- //
-
-	public boolean validateName(String name) throws EntitiesExceptionHandler {
+	public boolean validateCustomerId(int customerId) throws EntitiesExceptionHandler {
 
 		boolean result = false;
 
-		if (name == null || name.isBlank()) {
-			throw new EntitiesExceptionHandler("Customer Name NOT specified");
-
-		} else if (name.length() < 2) {
-			throw new EntitiesExceptionHandler("Customer Name does not meet minimum length requirements");
-
-		} else if (name.length() > 50) {
-			throw new EntitiesExceptionHandler("Customer Name exceeds maximum length requirements");
-
-		} else if (!name.matches("[a-zA-Z ]+")) { // Only allows letters and spaces
-			throw new EntitiesExceptionHandler("Customer Name contains invalid characters");
+		if (customerId <= 0) {
+			throw new EntitiesExceptionHandler("Customer ID must be greater than 0");
 
 		} else {
+
 			result = true;
 		}
 
 		return result;
 	}
 
-	public boolean validatePostcode(String postCode) throws EntitiesExceptionHandler {
+	public boolean validateAreaId(int areaId) throws EntitiesExceptionHandler {
 
 		boolean result = false;
 
-		// Regex for the format: one letter, two digits, two letters, two digits
-		String postCodeRegex = "^[A-Z]{1}\\d{2}[A-Z]{2}\\d{2}$";
-		Pattern pattern = Pattern.compile(postCodeRegex);
-		Matcher matcher = pattern.matcher(postCode);
+		String areaIdString = String.valueOf(areaId);
 
-		if (postCode == null || postCode.isBlank()) {
-			throw new EntitiesExceptionHandler("Postcode NOT specified");
+		// Check if the areaId is null or blank before parsing
+		if (areaIdString == null || areaIdString.isBlank()) {
+			throw new EntitiesExceptionHandler("Area Id Number NOT specified");
 
-		} else if (postCode.contains(" ")) {
-			throw new EntitiesExceptionHandler("Postcode must not contain spaces");
-
-		} else if (!matcher.matches()) {
-			throw new EntitiesExceptionHandler("Postcode format NOT valid. Expected format: A11XX22");
-
-		} else {
-			result = true;
 		}
 
-		return result;
-	}
+		int areaIdNumber;
 
-	public boolean validateAmountInDebt(double amountInDebt) throws EntitiesExceptionHandler {
+		try {
+			areaIdNumber = Integer.parseInt(areaIdString);
 
-		boolean result = false;
+		} catch (NumberFormatException e) {
+			throw new EntitiesExceptionHandler("Area Id must be a valid number");
 
-		if (amountInDebt < 0) {
-			throw new EntitiesExceptionHandler("Amount in debt must be a non-negative value");
+		}
+
+		// Additional checks for areaIdNumber
+		if (areaIdNumber <= 0) {
+			throw new EntitiesExceptionHandler("Area Id must be greater than zero");
+
+		} else if (areaIdNumber > 24) {
+			throw new EntitiesExceptionHandler("Area Id must be less than or equal to 24");
 
 		} else {
 			result = true;
 
 		}
+
 		return result;
 	}
 
-	public boolean validatePaymentStatus(int paymentStatus) throws EntitiesExceptionHandler {
-
-		boolean result = true;
-
-		if (paymentStatus < 0) {
-			result = false;
-			throw new EntitiesExceptionHandler("Payment Status must be a non-negative integer");
-
-		} else if (paymentStatus < 3) {
-			System.out.println("Less than three months in debt: " + paymentStatus);
-
-		} else if (paymentStatus >= 3) {
-			System.out.println("More than or Equal three months in debt: " + paymentStatus);
-			System.out.println("Warning Letter Issued to Customer.");
-
-		}
-		return result;
-
-	}
 }

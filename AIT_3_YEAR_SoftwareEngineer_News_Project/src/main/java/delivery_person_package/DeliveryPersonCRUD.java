@@ -81,7 +81,7 @@ public class DeliveryPersonCRUD {
 			Connection connection = deliveryPersonAccess.getConnection();
 
 			// Create prepared statement to issue SQL query to the database
-			preparedStatement = connection.prepareStatement("UPDATE Software_Project_NewsCompany.delivery_person SET name=?, phoneNumber=?, areaId=?, postcode=?, password=? WHERE id=?");
+			preparedStatement = connection.prepareStatement("UPDATE Software_Project_NewsCompany.delivery_person SET dperson_name=?, phone_number=?, area_id=?, postcode=?, password=? WHERE id=?");
 
 			preparedStatement.setString(1, updateDp.getName());
 			preparedStatement.setString(2, updateDp.getPhoneNumber());

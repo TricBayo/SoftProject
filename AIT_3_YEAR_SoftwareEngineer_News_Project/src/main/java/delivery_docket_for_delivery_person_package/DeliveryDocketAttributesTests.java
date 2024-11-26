@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import delivery_docket_for_newsagent_package.DeliveryDocket;
 import for_all_entities_package.EntitiesExceptionHandler;
 
 public class DeliveryDocketAttributesTests {
@@ -14,13 +15,13 @@ public class DeliveryDocketAttributesTests {
 	// delivery docket date
 	@Test
 	public void testValidDocketDate() throws EntitiesExceptionHandler {
-		assertTrue(deliveryDocket.deliveryDocketDate("01/10/2024")); // Valid date, matches order date
+		assertTrue(deliveryDocket.validateDeliveryDocketDate("01/10/2024")); // Valid date, matches order date
 	}
 
 	@Test
 	public void testInvalidDocketDate_NotMatchingOrderDate() {
 		assertThrows(EntitiesExceptionHandler.class, () -> {
-			deliveryDocket.deliveryDocketDate("02/102024"); // Docket date doesn't match order date
+			deliveryDocket.validateDeliveryDocketDate("2024-10-02"); // Docket date doesn't match order date
 		});
 	}
 
@@ -44,87 +45,69 @@ public class DeliveryDocketAttributesTests {
 		});
 	}
 
-	// customer name
+	// customerId tests
 	@Test
-	public void testValidCustomerName() throws EntitiesExceptionHandler {
-		assertTrue(deliveryDocket.validateCustomerName("John Doe")); // Valid name
+	public void testValidCustomerId() throws EntitiesExceptionHandler {
+		assertTrue(deliveryDocket.validateCustomerId(123)); // Valid customerId
 	}
 
 	@Test
-	public void testInvalidCustomerName_TooShort() {
+	public void testInvalidCustomerId_Negative() {
 		assertThrows(EntitiesExceptionHandler.class, () -> {
-			deliveryDocket.validateCustomerName("J"); // Less than 2 chars
+			deliveryDocket.validateCustomerId(-1); // Negative customerId
 		});
 	}
 
 	@Test
-	public void testInvalidCustomerName_TooLong() {
+	public void testInvalidCustomerId_Zero() {
 		assertThrows(EntitiesExceptionHandler.class, () -> {
-			deliveryDocket.validateCustomerName("ThisNameIsWayTooLongToBeValidThisNameIsWayTooLongToBeValid"); // More than 50 chars
+			deliveryDocket.validateDeliveryPersonId(0); // Zero customerId (invalid)
 		});
 	}
 
-	// delivery person name
+	// deliveryPersonId tests
 	@Test
-	public void testValidDeliveryPersonName() throws EntitiesExceptionHandler {
-		assertTrue(deliveryDocket.validateDeliveryPersonName("Jane Smith")); // Valid name
+	public void testValidDeliveryPersonId() throws EntitiesExceptionHandler {
+		assertTrue(deliveryDocket.validateDeliveryPersonId(123)); // Valid customerId
 	}
 
 	@Test
-	public void testInvalidDeliveryPersonName_TooShort() {
+	public void testInvalidDeliveryPersonId_Negative() {
 		assertThrows(EntitiesExceptionHandler.class, () -> {
-			deliveryDocket.validateDeliveryPersonName("J"); // Less than 2 chars
-		});
-	}
-
-	@Test
-	public void testInvalidDeliveryPersonName_TooLong() {
-		assertThrows(EntitiesExceptionHandler.class, () -> {
-			deliveryDocket.validateDeliveryPersonName("ThisNameIsWayTooLongToBeValidThisNameIsWayTooLongToBeValid"); // More than 50 chars
-		});
-	}
-
-	// postcode
-	@Test
-	public void testValidPostcode() throws EntitiesExceptionHandler {
-		assertTrue(deliveryDocket.validatePostcode("N37AO24")); // Valid postcode
-	}
-
-	@Test
-	public void testInvalidPostcode_LessThanRequiredLength() {
-		assertThrows(EntitiesExceptionHandler.class, () -> {
-			deliveryDocket.validatePostcode("N37 A02"); // Incorrect length
+			deliveryDocket.validateDeliveryPersonId(-1); // Negative customerId
 		});
 	}
 
 	@Test
-	public void testInvalidPostcode_WrongFormat() {
+	public void testInvalidDeliveryPersonId_Zero() {
 		assertThrows(EntitiesExceptionHandler.class, () -> {
-			deliveryDocket.validatePostcode("37N AO24"); // Incorrect format
+			deliveryDocket.validateDeliveryPersonId(0); // Zero customerId (invalid)
 		});
 	}
 
-	// special characters in customer name
+	// delivery status
 	@Test
-	public void testInvalidCustomerName_SpecialCharacters() {
+	public void testValidStatusDelivered() throws EntitiesExceptionHandler {
+		assertTrue(deliveryDocket.validateDeliveryStatus(1)); // Valid delivered status (one)
+	}
+
+	@Test
+	public void testValidStatusNotDelivered() throws EntitiesExceptionHandler {
+		assertTrue(deliveryDocket.validateDeliveryStatus(0)); // Valid not delivered status (zero)
+	}
+
+	@Test
+	public void testInvalidStatus_Negative() {
 		assertThrows(EntitiesExceptionHandler.class, () -> {
-			deliveryDocket.validateCustomerName("John@Doe");
+			deliveryDocket.validateDeliveryStatus(-1); // Invalid: Negative status number
 		});
 	}
 
-	// special characters in Delivery Person name
 	@Test
-	public void testInvalidDeliveryPersonName_SpecialCharacters() {
+	public void testInvalidStatus_GreaterThanOne() {
 		assertThrows(EntitiesExceptionHandler.class, () -> {
-			deliveryDocket.validateDeliveryPersonName("Jane@Smith");
+			deliveryDocket.validateDeliveryStatus(2); // Invalid: Status is two
 		});
 	}
 
-	// postcode with special characters
-	@Test
-	public void testInvalidPostcode_SpecialCharacters() {
-		assertThrows(EntitiesExceptionHandler.class, () -> {
-			deliveryDocket.validatePostcode("N37@AO24");
-		});
-	}
 }

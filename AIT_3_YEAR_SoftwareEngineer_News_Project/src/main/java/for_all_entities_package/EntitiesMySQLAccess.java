@@ -1,48 +1,28 @@
 package for_all_entities_package;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class EntitiesMySQLAccess {
 
-	private Connection connect = null;
-
 	// ---------------------- Constants Database attributes ------------------- //
-	final private String host = "localhost:3306";
-	final private String user = "root";
-	final private String password = "";
+	private final String host = "localhost:3306";
+	private final String user = "root";
+	private final String password = "";
 
 	// --------------------------- Database Connection -------------------------- //
 	public EntitiesMySQLAccess() throws Exception {
-
 		try {
 			// Load MySQL Driver
 			Class.forName("com.mysql.cj.jdbc.Driver");
-
-			// Setup the connection with the DB (No password included)
-			connect = DriverManager.getConnection("jdbc:mysql://" + host + "/Software_Project_NewsCompany?useSSL=false&serverTimezone=UTC", user, password);
-
-		} catch (Exception e) {
-
-			throw e;
-
+		} catch (ClassNotFoundException e) {
+			throw new Exception("MySQL Driver not found. " + e.getMessage());
 		}
 	}
 
-	// Method to get the current connection
-	public Connection getConnection() {
-
-		return connect;
-
+	// Method to create a new connection
+	public Connection getConnection() throws SQLException {
+		return DriverManager.getConnection("jdbc:mysql://" + host + "/Software_Project_NewsCompany?useSSL=false&serverTimezone=UTC", user, password);
 	}
-
-	// Method to close the connection
-	public void close() throws SQLException {
-
-		if (connect != null && !connect.isClosed()) {
-			connect.close();
-		}
-
-	}
-
 }

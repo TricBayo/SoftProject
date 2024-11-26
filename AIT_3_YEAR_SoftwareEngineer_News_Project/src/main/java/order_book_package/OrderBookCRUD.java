@@ -3,13 +3,11 @@ package order_book_package;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 
 import for_all_entities_package.EntitiesMySQLAccess;
 
 public class OrderBookCRUD {
 
-	private Statement statement = null;
 	private PreparedStatement preparedStatement = null;
 	private ResultSet resultSet = null;
 
@@ -31,19 +29,25 @@ public class OrderBookCRUD {
 			// Get the connection from MySQLAccess
 			Connection connection = orderBookAccess.getConnection();
 
-			// Create prepared statement to issue SQL query to the database
-			preparedStatement = connection.prepareStatement("INSERT INTO Software_Project_NewsCompany.order_book VALUES (default, ?, ?, ?)");
+			// SQL query to insert a new order book entry
+			String sql = """
+					INSERT INTO Software_Project_NewsCompany.order_book (customer_id, publication_id)
+					VALUES (?, ?)
+					""";
 
-			preparedStatement.setString(1, oB.getName());
-			preparedStatement.setString(2, oB.getPostcode());
-			preparedStatement.setString(3, oB.getPublicationName());
+			// Prepare the statement
+			preparedStatement = connection.prepareStatement(sql);
 
+			// Set the customer_id and publication_id from the OrderBook object
+			preparedStatement.setInt(1, oB.getCustomerId());
+			preparedStatement.setInt(2, oB.getPublicationId());
+
+			// Execute the insert query
 			preparedStatement.executeUpdate();
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			insertSuccessful = false;
-
 		}
 
 		return insertSuccessful;
@@ -56,20 +60,63 @@ public class OrderBookCRUD {
 			// Get the connection from MySQLAccess
 			Connection connection = orderBookAccess.getConnection();
 
-			// Create a statement to issue the SQL query to the database
-			statement = connection.createStatement();
-			resultSet = statement.executeQuery("SELECT * FROM Software_Project_NewsCompany.order_book");
+			String query = """
+										SELECT cp.customer_name,
+					       cp.postcode,
+					       p.publication_name
+					FROM Software_Project_NewsCompany.order_book ob
+					JOIN Software_Project_NewsCompany.customer_profile cp ON ob.customer_id = cp.id
+					JOIN Software_Project_NewsCompany.publication p ON ob.publication_id = p.id;""";
+
+			// Create prepared statement
+			preparedStatement = connection.prepareStatement(query);
+
+			// Execute the query
+			resultSet = preparedStatement.executeQuery();
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			resultSet = null;
-
 		}
 
 		return resultSet;
 	}
 
-	// ---------------------------- Update -------------------------- //
+	// ------------------------------ Read by ID ----------------------------- //
+	public ResultSet readOrderBookById(int id) {
+
+		try {
+			// Get the connection from MySQLAccess
+			Connection connection = orderBookAccess.getConnection();
+
+			String query = """
+						   SELECT cp.customer_name,
+					       cp.postcode,
+					       p.publication_name
+					FROM Software_Project_NewsCompany.order_book ob
+					JOIN Software_Project_NewsCompany.customer_profile cp ON ob.customer_id = cp.id
+					JOIN Software_Project_NewsCompany.publication p ON ob.publication_id = p.id
+					WHERE ob.id = ?;
+										""";
+
+			// Create prepared statement
+			preparedStatement = connection.prepareStatement(query);
+
+			// Set the order_book ID parameter
+			preparedStatement.setInt(1, id);
+
+			// Execute the query
+			resultSet = preparedStatement.executeQuery();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			resultSet = null;
+		}
+
+		return resultSet;
+	}
+
+	// ---------------------------- Update ------------------------- //
 	public boolean updateOrderBookById(int id, OrderBook updateOb) {
 
 		boolean updateSuccessful = true;
@@ -78,21 +125,32 @@ public class OrderBookCRUD {
 			// Get the connection from MySQLAccess
 			Connection connection = orderBookAccess.getConnection();
 
-			// Create prepared statement to issue SQL query to the database
-			preparedStatement = connection.prepareStatement("UPDATE Software_Project_NewsCompany.order_book SET name=?, postcode=?, publicationName=? WHERE id=?");
+			String query = """
+					UPDATE Software_Project_NewsCompany.order_book
+					SET customer_id = ?, publication_id = ?
+					WHERE id = ?
+					""";
 
-			preparedStatement.setString(1, updateOb.getName());
-			preparedStatement.setString(2, updateOb.getPostcode());
-			preparedStatement.setString(3, updateOb.getPublicationName());
+			// Create prepared statement
+			preparedStatement = connection.prepareStatement(query);
 
-			preparedStatement.setInt(4, id);
+			// Set parameters for track_number, order_date, and id
+			preparedStatement.setInt(1, updateOb.getCustomerId());
+			preparedStatement.setInt(2, updateOb.getPublicationId());
 
-			preparedStatement.executeUpdate();
+			preparedStatement.setInt(3, id);
+
+			// Execute the update
+			int rowsAffected = preparedStatement.executeUpdate();
+
+			// Check if the update was successful
+			if (rowsAffected == 0) {
+				updateSuccessful = false;
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			updateSuccessful = false;
-
 		}
 
 		return updateSuccessful;
@@ -111,7 +169,7 @@ public class OrderBookCRUD {
 				// Delete all entries in the table
 				preparedStatement = connection.prepareStatement("DELETE FROM Software_Project_NewsCompany.order_book");
 			} else {
-				// Delete a particular customer
+				// Delete Order Book by Id
 				preparedStatement = connection.prepareStatement("DELETE FROM Software_Project_NewsCompany.order_book WHERE id = ?");
 				preparedStatement.setInt(1, id);
 			}
@@ -127,28 +185,5 @@ public class OrderBookCRUD {
 
 		return deleteSuccessful;
 	}
-
-	// ------------------------------ Read by ID ----------------------------- //
-	public ResultSet readOrderBookById(int id) {
-
-    	try {
-        // Get the connection from MySQLAccess
-        	Connection connection = orderBookAccess.getConnection();
-
-        // Create prepared statement to issue SQL query to the database for a specific id
-        	preparedStatement = connection.prepareStatement("SELECT FROM Software_Project_NewsCompany.order_book WHERE id = ?");
-        	preparedStatement.setInt(1, id);
-
-        // Execute the query
-        	resultSet = preparedStatement.executeQuery();
-
-    	} catch (Exception e) {
-        e.printStackTrace();
-        resultSet = null;
-    }
-
-    return resultSet;
-}
-
 
 }
