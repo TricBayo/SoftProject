@@ -1,0 +1,1 @@
+CREATE DATABASE IF NOT EXISTS Software_Project_NewsCompany;

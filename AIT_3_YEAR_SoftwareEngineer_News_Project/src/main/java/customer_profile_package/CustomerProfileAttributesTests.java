@@ -1,6 +1,6 @@
 package customer_profile_package;
 
-import static org.junit.Assert.assertThrows; 
+import static org.junit.Assert.assertThrows;
 
 import org.junit.Test;
 
@@ -51,11 +51,18 @@ public class CustomerProfileAttributesTests extends TestCase {
 		assertTrue(customerProfile.validatePaymentStatus(2));
 	}
 
-	// Monthly payment status boundary value
+	// Valid monthly payment status boundary value
 	@Test
 	public void testValidMonthlyPaymentStatus_BoundaryValue() throws EntitiesExceptionHandler {
 		CustomerProfile customerProfile = new CustomerProfile();
-		assertTrue(customerProfile.validatePaymentStatus(3)); // Boundary value (3 months)
+		assertTrue(customerProfile.validatePaymentStatus(3));
+	}
+
+	// Valid monthly payment status greater than three
+	@Test
+	public void testValidMonthlyPaymentStatus_GreaterthanThree() throws EntitiesExceptionHandler {
+		CustomerProfile customerProfile = new CustomerProfile();
+		assertTrue(customerProfile.validatePaymentStatus(4));
 	}
 
 	// All invalid tests - causing exceptions
@@ -179,12 +186,12 @@ public class CustomerProfileAttributesTests extends TestCase {
 		});
 	}
 
-	// Monthly payment status more than 3 months delayed throws exception
+	// Monthly payment status less than 3 months delayed throws exception
 	@Test
-	public void test_invalid_monthly_payment_status() {
+	public void test_invalid_monthly_payment_status_less_than_zero() {
 		CustomerProfile customerProfile = new CustomerProfile();
 		assertThrows(EntitiesExceptionHandler.class, () -> {
-			customerProfile.validatePaymentStatus(4); // More than 3 months delayed
+			customerProfile.validatePaymentStatus(-1); // Less than 3 months delayed
 		});
 	}
 

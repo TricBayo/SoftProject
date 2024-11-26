@@ -1,8 +1,8 @@
 package menus;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.Scanner;
 
 import customer_profile_package.CustomerProfileCommandLine;
@@ -20,145 +20,167 @@ import warning_letter_package.WarningLetterCommandLine;
 
 public class Menus {
 
-	private static EntitiesMySQLAccess menusAccess;
+	// An instance of EntitiesMySQLAccess to get Connection
+	private EntitiesMySQLAccess menusAccess;
 
+	// Constructor
 	public Menus() throws Exception {
 
 		menusAccess = new EntitiesMySQLAccess();
 
 	}
 
+	// main method
 	public static void main(String[] args) throws Exception {
+
+		Menus menus = new Menus();
 
 		Scanner scanner = new Scanner(System.in);
 		boolean keepRunning = true;
 
 		while (keepRunning) {
 
-			System.out.println("Select login type");
-			System.out.println("---------------------------");
-			System.out.println("1 - Newsagent");
-			System.out.println("2 - Delivery Person");
-			System.out.println("0 - Exit");
-			System.out.println("---------------------------");
+			System.out.println();
+			System.out.println("Select login type:");
+			System.out.println("--------------------");
+			System.out.println("1 - Newsagent       |");
+			System.out.println("2 - Delivery Person |");
+			System.out.println("0 - Exit            |");
+			System.out.println("--------------------");
 			System.out.print("Please, Enter choice: ");
+
+			if (!scanner.hasNextInt()) {
+
+				System.out.println("Invalid input. Please enter a number (0, 1, or 2).");
+
+				scanner.next();
+
+				continue;
+			}
 
 			int choice = scanner.nextInt();
 			scanner.nextLine();
 
 			if (choice == 1) {
-				System.out.println("\nHi, Welcome to Newsagent Login Account...");
+				System.out.println("\nHi, Welcome to Newsagent Login Account:");
 
 			} else if (choice == 2) {
-				System.out.println("\nHi, Welcome to Delivery Person Login Account...");
+				System.out.println("\nHi, Welcome to Delivery Person Login Account:");
 
 			} else if (choice == 0) {
-
 				System.out.println("Exiting program...");
 
 				keepRunning = false;
 				continue;
 
+			} else {
+				System.out.println("Invalid choice. Please select a valid option from the menu.");
+				continue;
+
 			}
 
 			// Prompt for Credentials
+			System.out.println();
 			System.out.print("Please, Enter Name: ");
 			String name = scanner.nextLine();
 
 			System.out.print("Please, Enter Password: ");
 			String password = scanner.nextLine();
+			System.out.println();
 
-			boolean isAuthenticated = authenticate(choice, name, password);
+			boolean isAuthenticated = menus.authenticate(choice, name, password);
 
 			if (isAuthenticated) {
 
 				if (choice == 1) {
-
-					showNewsagentMenu(scanner);
+					showNewsagentMenu(scanner, name);
 
 				} else if (choice == 2) {
-
-					showDeliveryPersonMenu(scanner);
+					showDeliveryPersonMenu(scanner, name);
 
 				}
 
 			} else {
-
 				System.out.println("Invalid credentials. Please try again.");
 
 			}
-
 		}
 
 		scanner.close();
+
 	}
 
+	// ----------------------- End of the main method ----------------------- //
+
 	// Authentication method
-	private static boolean authenticate(int choice, String name, String password) throws Exception {
+	public boolean authenticate(int choice, String name, String password) throws Exception {
 
-		Connection connection = menusAccess.getConnection();
+		boolean isAuthenticated = false;
 
-		Statement s = connection.createStatement();
+		String query = "";
 
-		boolean nameFound = false;
+		if (choice == 1) {
 
-		if (choice == 1 && !(name.isBlank()) && !(password.isBlank())) {
+			query = "SELECT password FROM Software_Project_NewsCompany.newsagent_credentials WHERE LOWER(newsagent_name) = LOWER(?)";
 
-			ResultSet rs1 = s.executeQuery("SELECT name, password FROM Software_Project_NewsCompany.newsagent_profile");
+		} else if (choice == 2) {
+			query = "SELECT password FROM Software_Project_NewsCompany.delivery_person WHERE LOWER(dperson_name) = LOWER(?)";
 
-			while (rs1.next()) {
-
-				String nameFromDB = rs1.getString("name");
-				String passwordFromDB = rs1.getString("password");
-
-				if (nameFromDB.equalsIgnoreCase(name) && passwordFromDB.equalsIgnoreCase(password)) {
-
-					nameFound = true;
-				}
-
-			}
-
-		} else if (choice == 2 && !(name.isBlank()) && !(password.isBlank())) {
-
-			ResultSet rs2 = s.executeQuery("SELECT name, password FROM Software_Project_NewsCompany.delivery_person");
-
-			while (rs2.next()) {
-
-				String nameFromDB = rs2.getString("name");
-				String passwordFromDB = rs2.getString("password");
-
-				if (nameFromDB.equalsIgnoreCase(name) && passwordFromDB.equalsIgnoreCase(password)) {
-
-					nameFound = true;
-				}
-
-			}
+		} else {
+			System.out.println("Invalid choice!");
+			return false;
 
 		}
 
-		return nameFound;
+		try (Connection connection = menusAccess.getConnection(); PreparedStatement ps = connection.prepareStatement(query)) {
 
+			ps.setString(1, name);
+
+			try (ResultSet rs = ps.executeQuery()) {
+
+				if (rs.next()) {
+					String passwordFromDB = rs.getString("password");
+
+					if (passwordFromDB.equals(password)) {
+						isAuthenticated = true;
+
+					}
+				}
+			}
+		}
+
+		if (!isAuthenticated) {
+			System.out.println("Access Denied!");
+		}
+
+		return isAuthenticated;
 	}
 
+	// ------------------ End of the authentication method ------------------ //
+
 	// Newsagent menu
-	private static void showNewsagentMenu(Scanner scanner) {
+	private static void showNewsagentMenu(Scanner scanner, String name) {
+
+		System.out.println("-------------------------------");
+		System.out.println("Welcome " + name + ", Login Successful |");
+		System.out.println("-------------------------------");
 
 		while (true) {
 
-			System.out.println("\nNewsagent Menu");
-			System.out.println("---------------------------");
-			System.out.println("1 - Customer Profile");
-			System.out.println("2 - Delivery Person");
-			System.out.println("3 - Delivery Area");
-			System.out.println("4 - Delivery Docket");
-			System.out.println("5 - Order Book");
-			System.out.println("6 - Publication");
-			System.out.println("7 - Daily Summary Report");
-			System.out.println("8 - Monthly Invoice");
-			System.out.println("9 - Warning Letter");
-			System.out.println("10 - Newsagent");
-			System.out.println("11 - Logout");
-			System.out.println("---------------------------");
+			System.out.println("\nNewsagent Menu:");
+			System.out.println("--------------------------");
+			System.out.println("1 - Customer Profile      |");
+			System.out.println("2 - Delivery Person       |");
+			System.out.println("3 - Delivery Area         |");
+			System.out.println("4 - Delivery Docket       |");
+			System.out.println("5 - Order Book            |");
+			System.out.println("6 - Publication           |");
+			System.out.println("7 - Daily Summary Report  |");
+			System.out.println("8 - Monthly Invoice       |");
+			System.out.println("9 - Warning Letter        |");
+			System.out.println("10 - Newsagent            |");
+			System.out.println("11 - Logout               |");
+			System.out.println("--------------------------");
 			System.out.print("Please, Select an Option: ");
 
 			int option = scanner.nextInt();
@@ -241,16 +263,22 @@ public class Menus {
 
 	}
 
+	// ----------------- End of the show Newsagent Menu method ----------------- //
+
 	// Delivery Person menu
-	private static void showDeliveryPersonMenu(Scanner scanner) {
+	private static void showDeliveryPersonMenu(Scanner scanner, String name) {
+
+		System.out.println("---------------------------------");
+		System.out.println("| Welcome " + name + " Login Successful |");
+		System.out.println("---------------------------------");
 
 		while (true) {
 
-			System.out.println("\nDelivery Person Menu");
-			System.out.println("---------------------------");
-			System.out.println("1 - Delivery Docket");
-			System.out.println("2 - Logout");
-			System.out.println("---------------------------");
+			System.out.println("\nDelivery Person Menu:");
+			System.out.println("-------------------------");
+			System.out.println("1 - Delivery Docket     |");
+			System.out.println("2 - Logout              |");
+			System.out.println("-------------------------");
 			System.out.print("Please, Select an Option: ");
 
 			int option = scanner.nextInt();
@@ -278,5 +306,7 @@ public class Menus {
 		}
 
 	}
+
+	// -------------- End of the show Delivery Person Menu method -------------- //
 
 }

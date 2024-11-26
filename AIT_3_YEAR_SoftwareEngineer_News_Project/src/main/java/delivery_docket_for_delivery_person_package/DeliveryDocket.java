@@ -10,30 +10,31 @@ import for_all_entities_package.EntitiesExceptionHandler;
 
 public class DeliveryDocket {
 
-	private String customerName;
-	private String deliveryPersonName;
 	private String orderDate;
-	private String postcode;
 	private int trackNumber;
+	private int deliveryStatus;
+
+	private int customerId;
+	private int deliveryPersonId;
 
 	// ----------------------- Constructors ------------------------ //
 
 	public DeliveryDocket() {
 
 		// No-argument constructor
-
 	}
 
-	public DeliveryDocket(String customerName, String deliveryPersonName, String orderDate, String postcode, int trackNumber) throws EntitiesExceptionHandler {
+	public DeliveryDocket(String orderDate, int trackNumber, int deliveryStatus, int customerId, int deliveryPersonId) throws EntitiesExceptionHandler {
 
 		// Validate Input
 		try {
 
-			validateCustomerName(customerName);
-			validateDeliveryPersonName(deliveryPersonName);
-			deliveryDocketDate(orderDate);
-			validatePostcode(postcode);
+			validateDeliveryDocketDate(orderDate);
 			validateTrackingNumber(trackNumber);
+			validateDeliveryStatus(deliveryStatus);
+
+			validateCustomerId(customerId);
+			validateDeliveryPersonId(deliveryPersonId);
 
 		} catch (EntitiesExceptionHandler e) {
 
@@ -41,62 +42,52 @@ public class DeliveryDocket {
 
 		}
 
-		this.customerName = customerName;
-		this.deliveryPersonName = deliveryPersonName;
 		this.orderDate = orderDate;
-		this.postcode = postcode;
 		this.trackNumber = trackNumber;
+		this.deliveryStatus = deliveryStatus;
+
+		this.customerId = customerId;
+		this.deliveryPersonId = deliveryPersonId;
 	}
 
 	// ----------------------- Getter and Setters ------------------------ //
 
-	public String getCustomerName() {
+	public int getCustomerId() {
 
-		return customerName;
+		return this.customerId;
 	}
 
-	public void setCustomerName(String customerName) throws EntitiesExceptionHandler {
+	public void setCustomerId(int customerId) throws EntitiesExceptionHandler {
 
-		validateCustomerName(customerName);
-		this.customerName = customerName;
+		validateCustomerId(customerId);
+		this.customerId = customerId;
 	}
 
-	public String getDeliveryPersonName() {
+	public int getDeliveryPersonId() {
 
-		return deliveryPersonName;
+		return this.deliveryPersonId;
 	}
 
-	public void setDeliveryPersonName(String deliveryPersonName) throws EntitiesExceptionHandler {
+	public void setDeliveryPersonId(int deliveryPersonId) throws EntitiesExceptionHandler {
 
-		validateDeliveryPersonName(deliveryPersonName);
-		this.deliveryPersonName = deliveryPersonName;
+		validateDeliveryPersonId(deliveryPersonId);
+		this.deliveryPersonId = deliveryPersonId;
 	}
 
 	public String getOrderDate() {
 
-		return orderDate;
+		return this.orderDate;
 	}
 
 	public void setOrderDate(String orderDate) throws EntitiesExceptionHandler {
 
-		deliveryDocketDate(orderDate);
+		validateDeliveryDocketDate(orderDate);
 		this.orderDate = orderDate;
-	}
-
-	public String getPostcode() {
-
-		return postcode;
-	}
-
-	public void setPostcode(String postcode) throws EntitiesExceptionHandler {
-
-		validatePostcode(postcode);
-		this.postcode = postcode;
 	}
 
 	public int getTrackNumber() {
 
-		return trackNumber;
+		return this.trackNumber;
 	}
 
 	public void setTrackNumber(int trackNumber) throws EntitiesExceptionHandler {
@@ -105,55 +96,50 @@ public class DeliveryDocket {
 		this.trackNumber = trackNumber;
 	}
 
+	public int getDeliveryStatus() {
+
+		return deliveryStatus;
+	}
+
+	public void setDeliveryStatus(int deliveryStatus) {
+
+		this.deliveryStatus = deliveryStatus;
+	}
+
 	// ----------------- Attributes Validating Method ----------------- //
 
-	public boolean validateCustomerName(String name) throws EntitiesExceptionHandler {
+	public boolean validateCustomerId(int customerId) throws EntitiesExceptionHandler {
 
 		boolean result = false;
 
-		if (name == null || name.isBlank()) {
-			throw new EntitiesExceptionHandler("Customer Name NOT specified");
-
-		} else if (name.length() < 2) {
-			throw new EntitiesExceptionHandler("Customer Name does not meet minimum length requirements");
-
-		} else if (name.length() > 50) {
-			throw new EntitiesExceptionHandler("Customer Name exceeds maximum length requirements");
-
-		} else if (!name.matches("[a-zA-Z ]+")) { // Only allows letters and spaces
-			throw new EntitiesExceptionHandler("Customer Name contains invalid characters");
+		if (customerId <= 0) {
+			throw new EntitiesExceptionHandler("Customer ID must be greater than 0");
 
 		} else {
+
 			result = true;
 		}
 
 		return result;
 	}
 
-	public boolean validateDeliveryPersonName(String name) throws EntitiesExceptionHandler {
+	public boolean validateDeliveryPersonId(int deliveryPersonId) throws EntitiesExceptionHandler {
 
 		boolean result = false;
 
-		if (name == null || name.isBlank()) {
-			throw new EntitiesExceptionHandler("Customer Name NOT specified");
-
-		} else if (name.length() < 2) {
-			throw new EntitiesExceptionHandler("Customer Name does not meet minimum length requirements");
-
-		} else if (name.length() > 50) {
-			throw new EntitiesExceptionHandler("Customer Name exceeds maximum length requirements");
-
-		} else if (!name.matches("[a-zA-Z ]+")) { // Only allows letters and spaces
-			throw new EntitiesExceptionHandler("Customer Name contains invalid characters");
+		if (deliveryPersonId <= 0) {
+			throw new EntitiesExceptionHandler("Delivery Person ID must be greater than 0");
 
 		} else {
+
 			result = true;
 		}
 
 		return result;
 	}
 
-	public boolean deliveryDocketDate(String date) throws EntitiesExceptionHandler {
+	public boolean validateDeliveryDocketDate(String date) throws EntitiesExceptionHandler {
+
 		// Regex to validate date format as DD/MM/YYYY
 		String dateRegex = "^\\d{2}/\\d{2}/\\d{4}$";
 		Pattern pattern = Pattern.compile(dateRegex);
@@ -180,31 +166,6 @@ public class DeliveryDocket {
 		return true; // Return true if the date is valid
 	}
 
-	public boolean validatePostcode(String postCode) throws EntitiesExceptionHandler {
-
-		boolean result = false;
-
-		// Regex for the format: one letter, two digits, two letters, two digits
-		String postCodeRegex = "^[A-Z]{1}\\d{2}[A-Z]{2}\\d{2}$";
-		Pattern pattern = Pattern.compile(postCodeRegex);
-		Matcher matcher = pattern.matcher(postCode);
-
-		if (postCode == null || postCode.isBlank()) {
-			throw new EntitiesExceptionHandler("Postcode NOT specified");
-
-		} else if (postCode.contains(" ")) {
-			throw new EntitiesExceptionHandler("Postcode must not contain spaces");
-
-		} else if (!matcher.matches()) {
-			throw new EntitiesExceptionHandler("Postcode format NOT valid. Expected format: A11XX22");
-
-		} else {
-			result = true;
-		}
-
-		return result;
-	}
-
 	public boolean validateTrackingNumber(int trackNumber) throws EntitiesExceptionHandler {
 
 		boolean result = false;
@@ -214,6 +175,29 @@ public class DeliveryDocket {
 
 		} else {
 			result = true;
+
+		}
+
+		return result;
+	}
+
+	public boolean validateDeliveryStatus(int deliveryStatus) throws EntitiesExceptionHandler {
+
+		boolean result = true;
+
+		if (deliveryStatus < 0) {
+			result = false;
+			throw new EntitiesExceptionHandler("Delivery Status cannot be a negative number");
+
+		} else if (deliveryStatus > 1) {
+			result = false;
+			throw new EntitiesExceptionHandler("Delivery Status value should be: (1 If Delivered Successfully) or (0 If NOT Delivered)");
+
+		} else if (deliveryStatus == 0) {
+			System.out.println("Status: NOT Delivered");
+
+		} else if (deliveryStatus == 1) {
+			System.out.println("Status: Delivered SUCCESSFULLY");
 
 		}
 
