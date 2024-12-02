@@ -13,6 +13,3 @@ Customers come and go and may be away temporarily on holiday or on business.
 Not all customers necessarily have a delivery every day.
 
 The system should be able to manage some simple geographic information so that it prints information for the delivery person in the order in which publications are delivered.
-
-## Setup
-To run this code, change the username and password for the db connection in the java file under for_a;;_entity_packages
